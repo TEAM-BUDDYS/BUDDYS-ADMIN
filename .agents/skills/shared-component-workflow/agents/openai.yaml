@@ -1,0 +1,4 @@
+interface:
+  display_name: "공통 UI 구현"
+  short_description: "공통 UI와 디자인 토큰의 재사용 경계를 설계합니다"
+  default_prompt: "Use $shared-component-workflow to implement or review this shared UI or design token."
