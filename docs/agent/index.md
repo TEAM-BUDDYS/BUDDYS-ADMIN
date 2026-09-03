@@ -28,15 +28,15 @@ docs/
 
 ## Skills
 
-| Skill                       | Purpose                                      |
-| --------------------------- | -------------------------------------------- |
-| `repo-orientation`          | 브랜치, 구조, 관련 문서와 기존 패턴 확인     |
-| `frontend-task-workflow`    | 요청 유형 분류와 작업 흐름 선택              |
-| `page-feature-workflow`     | SPA 페이지, 라우트와 화면 흐름 구현          |
-| `shared-component-workflow` | 공통 UI와 디자인 토큰의 재사용 경계 설계     |
-| `api-integration-workflow`  | 브라우저 API 연동과 UI 상태 연결              |
-| `architecture-review`       | `app/pages/shared` 소유권과 의존 방향 검토   |
-| `verify-frontend`           | 변경 범위에 맞는 정적 검사와 UI 검증         |
+| Skill                       | Purpose                                    |
+| --------------------------- | ------------------------------------------ |
+| `repo-orientation`          | 브랜치, 구조, 관련 문서와 기존 패턴 확인   |
+| `frontend-task-workflow`    | 요청 유형 분류와 작업 흐름 선택            |
+| `page-feature-workflow`     | SPA 페이지, 라우트와 화면 흐름 구현        |
+| `shared-component-workflow` | 공통 UI와 디자인 토큰의 재사용 경계 설계   |
+| `api-integration-workflow`  | 브라우저 API 연동과 UI 상태 연결           |
+| `architecture-review`       | `app/pages/shared` 소유권과 의존 방향 검토 |
+| `verify-frontend`           | 변경 범위에 맞는 정적 검사와 UI 검증       |
 
 ## Usage
 
