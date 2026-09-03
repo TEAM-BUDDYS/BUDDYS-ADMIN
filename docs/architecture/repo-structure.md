@@ -6,6 +6,7 @@ BUDDYS-ADMIN은 단일 Vite SPA로 시작합니다.
 
 ```text
 .agents/
+.github/
 docs/
 src/
 .gitignore
@@ -24,6 +25,7 @@ vite.config.ts
 ## Root Directories And Files
 
 - `.agents`: AI agent가 사용하는 작업 유형별 Skill
+- `.github`: PR 알림 같은 GitHub Actions 자동화 설정
 - `docs`: 프로젝트 구조, 컨벤션과 작업 절차 문서
 - `src`: React 애플리케이션 코드
 - `.gitignore`: 생성물, 설치 결과와 로컬 전용 파일 제외 규칙
@@ -42,6 +44,7 @@ vite.config.ts
 - 앱 코드는 `src` 안에 둡니다.
 - 프로젝트 구조와 팀 규칙 문서는 `docs`에 둡니다.
 - Agent 실행 절차는 `.agents/skills`에 둡니다.
+- GitHub Actions workflow는 `.github/workflows`에 두고 webhook과 credential은 코드가 아닌 GitHub Actions secret으로 관리합니다.
 - `AGENTS.md`는 세부 규칙을 복사하지 않고 Source of Truth를 연결합니다.
 - 새 루트 디렉터리는 역할과 실제 사용처가 명확할 때만 추가합니다.
 - URL로 직접 접근하거나 원본 그대로 제공해야 하는 정적 파일이 생길 때만 `public`을 추가합니다.
