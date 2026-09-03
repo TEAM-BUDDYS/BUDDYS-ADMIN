@@ -20,12 +20,15 @@
 git status --short
 git diff --check
 git diff --cached --check
+pnpm format:check
 pnpm lint
 pnpm exec tsc -b
 pnpm build
 ```
 
 `git diff --check`는 tracked working tree 변경, `git diff --cached --check`는 staged 변경을 검사합니다. untracked 파일은 두 명령에 포함되지 않으므로 `git status --short`로 확인하고, 최종 커밋 전에는 의도한 새 파일을 stage한 뒤 cached diff를 검사하거나 별도의 공백 검사를 실행합니다. 확인하지 않은 신규 파일이 남아 있으면 공백 검증을 통과했다고 보고하지 않습니다.
+
+`pnpm format:check`는 Prettier 대상 파일의 형식을 검사하고 파일을 수정하지 않습니다. 형식을 적용해야 할 때는 `pnpm format`을 사용한 뒤 변경 범위를 다시 확인합니다.
 
 현재 `pnpm build`는 `tsc -b && vite build`를 실행합니다. 같은 변경에서 build를 실행했다면 별도의 TypeScript build를 중복 실행할 필요는 없지만, 빠른 정적 확인만 필요할 때 `pnpm exec tsc -b`를 사용할 수 있습니다.
 

@@ -2,10 +2,10 @@
 
 ## Requirements
 
-- 현재 Vite 버전과 호환되는 Node.js
-- pnpm
+- Node.js 22.13 이상 23 미만 또는 24 이상
+- pnpm 10.15.1
 
-프로젝트에서 `.nvmrc`, `packageManager` 또는 `engines`를 추가하면 해당 파일을 우선합니다. 지원 범위를 추측하지 않고 `package.json`과 설치된 도구의 요구 버전을 확인합니다.
+Node.js와 pnpm 지원 범위는 `package.json`의 `engines`와 `packageManager`를 따릅니다.
 
 ## Install
 
@@ -30,12 +30,23 @@ Vite가 터미널에 출력하는 로컬 URL에서 애플리케이션을 확인�
 ## Check
 
 ```bash
+pnpm format:check
 pnpm lint
 pnpm exec tsc -b
 pnpm build
 ```
 
 `pnpm build`는 현재 `tsc -b && vite build`를 실행하므로 전체 빌드 검증에는 TypeScript 검사가 포함됩니다. 명령은 변경 범위에 맞게 선택하고 자세한 기준은 [Verification](./verification.md)을 따릅니다.
+
+## Git Hooks
+
+`pnpm install`은 `prepare` script를 통해 Husky Git hook을 설정합니다. commit 전에는 lint-staged가 staged 파일에 필요한 ESLint와 Prettier 수정을 적용합니다.
+
+훅을 직접 확인할 때는 의도한 파일을 stage한 뒤 다음 명령을 사용합니다.
+
+```bash
+pnpm lint-staged
+```
 
 ## Preview
 

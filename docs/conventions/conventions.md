@@ -1,18 +1,27 @@
 # Coding Convention
 
-이 문서는 현재 Vite와 TypeScript 설정, 기존 코드와 합의된 `app/pages/shared` 구조를 기준으로 합니다. ESLint나 formatter 설정에 없는 스타일을 대규모 기계적 변경으로 강제하지 않습니다.
+이 문서는 현재 Vite와 TypeScript 설정, 기존 코드와 합의된 `app/pages/shared` 구조를 기준으로 합니다. 코드 품질은 ESLint, 형식은 Prettier 설정을 원본으로 사용합니다.
+
+## Formatting And Linting
+
+- ESLint는 React Hooks, React Refresh, TypeScript, import 정렬과 미사용 import 규칙을 검사합니다.
+- Prettier는 semicolon, single quote, 2칸 들여쓰기, trailing comma와 80자 print width를 적용합니다.
+- ESLint와 Prettier의 규칙 충돌은 `eslint-config-prettier`로 방지합니다.
+- 전체 검사는 `pnpm lint`와 `pnpm format:check`, 자동 수정은 `pnpm lint:fix`와 `pnpm format`을 사용합니다.
+- pre-commit hook은 staged JavaScript·TypeScript 파일에 ESLint와 Prettier, JSON·CSS·HTML·Markdown·YAML 파일에 Prettier를 적용합니다.
+- 별도 스키마로 검증하는 `.agents`와 패키지 매니저가 생성하는 `pnpm-lock.yaml`은 Prettier 대상에서 제외합니다.
 
 ## File And Folder
 
-| Target                       | Convention                  | Example                                      |
-| ---------------------------- | --------------------------- | -------------------------------------------- |
-| Folder                       | `kebab-case`                | `document-reviews/`                          |
-| React component file         | `PascalCase.tsx`            | `DocumentReviewItem.tsx`                     |
-| Hook                         | `useCamelCase.ts`           | `useDocumentReviews.ts`                      |
-| API                          | `camelCase.api.ts`          | `documentReview.api.ts`                      |
-| Type                         | `camelCase.types.ts`        | `documentReview.types.ts`                    |
-| Utility                      | `camelCase.ts`              | `formatDate.ts`                              |
-| CSS Module                   | component name + `.module.css` | `DocumentReviewItem.module.css`           |
+| Target               | Convention                     | Example                         |
+| -------------------- | ------------------------------ | ------------------------------- |
+| Folder               | `kebab-case`                   | `document-reviews/`             |
+| React component file | `PascalCase.tsx`               | `DocumentReviewItem.tsx`        |
+| Hook                 | `useCamelCase.ts`              | `useDocumentReviews.ts`         |
+| API                  | `camelCase.api.ts`             | `documentReview.api.ts`         |
+| Type                 | `camelCase.types.ts`           | `documentReview.types.ts`       |
+| Utility              | `camelCase.ts`                 | `formatDate.ts`                 |
+| CSS Module           | component name + `.module.css` | `DocumentReviewItem.module.css` |
 
 - React 컴포넌트와 타입 이름은 `PascalCase`를 사용합니다.
 - 기존 Vite 진입 파일인 `main.tsx`와 `App.tsx`의 이름은 유지합니다.
@@ -30,8 +39,8 @@
 
 ```tsx
 interface DocumentReviewItemProps {
-  applicantName: string
-  status: string
+  applicantName: string;
+  status: string;
 }
 
 export const DocumentReviewItem = ({
@@ -43,8 +52,8 @@ export const DocumentReviewItem = ({
       <h2>{applicantName}</h2>
       <span>{status}</span>
     </article>
-  )
-}
+  );
+};
 ```
 
 ## Type

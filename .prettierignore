@@ -1,0 +1,6 @@
+.agents
+node_modules
+dist
+dist-ssr
+coverage
+pnpm-lock.yaml
