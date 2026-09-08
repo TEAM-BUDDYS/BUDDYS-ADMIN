@@ -29,7 +29,7 @@ vite.config.ts
 ## Root Directories And Files
 
 - `.agents`: AI agent가 사용하는 작업 유형별 Skill
-- `.github`: PR 알림 같은 GitHub Actions 자동화 설정
+- `.github`: CI와 PR 알림 같은 GitHub Actions 자동화 설정
 - `.husky`: Git hook에서 실행할 자동화 스크립트
 - `docs`: 프로젝트 구조, 컨벤션과 작업 절차 문서
 - `src`: React 애플리케이션 코드
