@@ -62,3 +62,15 @@ jobs:
             --connect-timeout 5 --max-time 10 \
             --retry 10 --retry-delay 1 --retry-max-time 30 --retry-all-errors \
             http://127.0.0.1:4173/ > /dev/null
+
+  deploy:
+    name: Deploy to Vercel
+    needs: quality
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/cd.yml
+    with:
+      target: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+    secrets:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
