@@ -23,6 +23,7 @@ BUDDYS-ADMIN의 구조와 개발 규칙을 정리합니다.
 
 - [Local Development](./workflows/local-development.md)
 - [Continuous Integration](./workflows/ci.md)
+- [Continuous Deployment](./workflows/cd.md)
 - [Feature Development](./workflows/feature-development.md)
 - [Dependency Maintenance](./workflows/dependency-maintenance.md)
 - [Verification](./workflows/verification.md)
