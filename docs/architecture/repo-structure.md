@@ -29,7 +29,7 @@ vite.config.ts
 ## Root Directories And Files
 
 - `.agents`: AI agent가 사용하는 작업 유형별 Skill
-- `.github`: CI와 PR 알림 같은 GitHub Actions 자동화 설정
+- `.github`: CI, Vercel CD와 PR 알림 같은 GitHub Actions 자동화 설정
 - `.husky`: Git hook에서 실행할 자동화 스크립트
 - `docs`: 프로젝트 구조, 컨벤션과 작업 절차 문서
 - `src`: React 애플리케이션 코드
@@ -53,6 +53,7 @@ vite.config.ts
 - 프로젝트 구조와 팀 규칙 문서는 `docs`에 둡니다.
 - Agent 실행 절차는 `.agents/skills`에 둡니다.
 - GitHub Actions workflow는 `.github/workflows`에 두고 webhook과 credential은 코드가 아닌 GitHub Actions secret으로 관리합니다.
+- Vercel의 `.vercel`과 `.env.local`은 로컬 생성 파일로 취급해 커밋하지 않습니다.
 - Git hook은 `.husky`에 두고 staged 파일 검사는 `lint-staged.config.mjs`에서 관리합니다.
 - `AGENTS.md`는 세부 규칙을 복사하지 않고 Source of Truth를 연결합니다.
 - 새 루트 디렉터리는 역할과 실제 사용처가 명확할 때만 추가합니다.
