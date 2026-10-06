@@ -1,5 +1,7 @@
+import { AppLayout } from './layouts/AppLayout';
+
 function App() {
-  return <div>buddys-admin</div>;
+  return <AppLayout>buddys-admin</AppLayout>;
 }
 
 export default App;

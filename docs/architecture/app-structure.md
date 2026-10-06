@@ -11,6 +11,8 @@ src/
   app/
     App.tsx
     layouts/
+      AppLayout.module.css
+      AppLayout.tsx
     providers/
     router/
 
@@ -29,10 +31,17 @@ src/
 
   shared/
     api/
+    assets/
+      fonts/
     constants/
     hooks/
     styles/
+      fonts.css
+      global.css
+      index.css
       tokens/
+        colors.css
+        typography.css
     types/
     ui/
     utils/
@@ -51,7 +60,7 @@ src/
 ### `src/app`
 
 - `App.tsx`: 최상위 앱 컴포넌트
-- `layouts`: 여러 route가 공유하는 관리자 화면 골격
+- `layouts`: 여러 route가 공유하는 관리자 화면 골격. 현재 `AppLayout`은 Client와 동일한 375px~430px 모바일 화면 폭을 소유합니다.
 - `providers`: 전역 Context와 라이브러리 Provider 조합
 - `router`: route 정의, 보호 route와 navigation 설정
 
@@ -86,6 +95,7 @@ pages/{page}/
 ### `src/shared`
 
 - `api`: HTTP client, 인증 header, 공통 오류 변환처럼 여러 페이지가 사용하는 통신 기반
+- `assets`: 여러 페이지에서 공통으로 사용하는 폰트와 이미지 같은 번들 자산
 - `constants`: 여러 페이지에서 의미와 변경 이유가 같은 상수
 - `hooks`: 제품 페이지 지식 없이 재사용되는 훅
 - `styles`: 전역 스타일 진입점과 디자인 토큰
