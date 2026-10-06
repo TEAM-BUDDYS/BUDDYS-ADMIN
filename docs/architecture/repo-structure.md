@@ -35,7 +35,7 @@ vite.config.ts
 - `src`: React 애플리케이션 코드
 - `.gitignore`: 생성물, 설치 결과와 로컬 전용 파일 제외 규칙
 - `.prettierignore`: Prettier 포맷 대상 제외 규칙
-- `.prettierrc`: Prettier 코드 포맷 설정
+- `.prettierrc`: Prettier 코드 포맷과 Tailwind utility 정렬 설정
 - `AGENTS.md`: AI agent의 저장소 진입점
 - `README.md`: 사람을 위한 프로젝트 소개와 빠른 시작
 - `eslint.config.js`: TypeScript와 React 정적 검사 설정
@@ -44,7 +44,7 @@ vite.config.ts
 - `package.json`: 스크립트와 직접 의존성의 원본
 - `pnpm-lock.yaml`: pnpm이 해석한 의존성 버전
 - `tsconfig*.json`: 앱, Vite 설정과 project reference를 위한 TypeScript 설정
-- `vite.config.ts`: Vite 빌드와 플러그인 설정
+- `vite.config.ts`: React와 Tailwind를 포함한 Vite 빌드·플러그인 설정
 
 ## Rules
 

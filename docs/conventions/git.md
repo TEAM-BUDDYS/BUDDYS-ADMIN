@@ -37,9 +37,18 @@ PR 제목에는 작업 유형과 Jira key를 포함합니다.
 ```text
 [Init] BDYFE-XXX React 프로젝트 생성
 [Feat] BDYFE-XXX 서류 인증 목록 구현
+[Style] BDYFE-XXX 디자인 토큰 설정
 ```
 
 PR 대상 브랜치는 기본적으로 `develop`을 사용합니다.
+
+### Automatic Labels
+
+PR이 열리거나 다시 열릴 때, draft가 해제될 때 또는 제목이 수정될 때 PR 제목의 작업 유형과 작성자 GitHub 계정을 기준으로 라벨을 자동 지정합니다.
+
+지원하는 PR 제목 유형은 `Init`, `Feat`, `Fix`, `Docs`, `Refactor`, `Style`, `Chore`, `Deploy`입니다. 제목은 `[Style]`처럼 대괄호로 감싼 작업 유형으로 시작해야 합니다.
+
+PR 제목의 작업 유형이 변경되면 기존 작업 유형 라벨은 제거하고 새 작업 유형 라벨을 지정합니다. 작업 유형 또는 작성자에 대응하는 라벨이 없으면 해당 라벨은 추가하지 않습니다.
 
 ## Rules
 
