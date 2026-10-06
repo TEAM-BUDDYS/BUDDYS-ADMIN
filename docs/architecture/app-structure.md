@@ -32,6 +32,7 @@ src/
     api/
     assets/
       fonts/
+      icons/
     constants/
     hooks/
     styles/
@@ -44,11 +45,18 @@ src/
         typography.css
     types/
     ui/
+      icons/
+      Button.tsx
+      Header.tsx
+      TextArea.tsx
+      TextField.tsx
     utils/
       cn.ts
 ```
 
 현재 빈 디렉터리는 초기 구조를 Git에 유지하기 위해 `.gitkeep`을 포함합니다. 실제 파일을 추가할 때 같은 디렉터리의 `.gitkeep`은 제거합니다.
+
+`shared/assets/icons`에는 공통 아이콘의 원본 SVG를 두고, `pnpm icons:generate`로 `shared/ui/icons`의 React 컴포넌트와 export를 생성합니다. 생성된 파일은 직접 수정하지 않습니다.
 
 ## Directory Responsibilities
 
