@@ -27,6 +27,7 @@
 - 기존 Vite 진입 파일인 `main.tsx`와 `App.tsx`의 이름은 유지합니다.
 - 파일은 역할이 하나일 때 해당 역할이 드러나는 이름을 사용합니다.
 - 불필요한 `index.ts` barrel file을 만들지 않습니다. 공개 경계를 명확히 줄이는 실제 이점이 있을 때만 추가합니다.
+- `src/shared/ui/icons`의 SVGR 생성 파일은 원본 SVG 이름과 생성 스크립트 규칙에 따라 `kebab-case`를 사용하며 직접 수정하지 않습니다.
 
 ## Component
 
