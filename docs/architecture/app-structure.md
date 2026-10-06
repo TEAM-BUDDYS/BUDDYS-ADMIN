@@ -11,7 +11,6 @@ src/
   app/
     App.tsx
     layouts/
-      AppLayout.module.css
       AppLayout.tsx
     providers/
     router/
@@ -36,6 +35,7 @@ src/
     constants/
     hooks/
     styles/
+      animations.css
       fonts.css
       global.css
       index.css
@@ -45,6 +45,7 @@ src/
     types/
     ui/
     utils/
+      cn.ts
 ```
 
 현재 빈 디렉터리는 초기 구조를 Git에 유지하기 위해 `.gitkeep`을 포함합니다. 실제 파일을 추가할 때 같은 디렉터리의 `.gitkeep`은 제거합니다.
@@ -60,7 +61,7 @@ src/
 ### `src/app`
 
 - `App.tsx`: 최상위 앱 컴포넌트
-- `layouts`: 여러 route가 공유하는 관리자 화면 골격. 현재 `AppLayout`은 Client와 동일한 375px~430px 모바일 화면 폭을 소유합니다.
+- `layouts`: 여러 route가 공유하는 관리자 화면 골격. 현재 `AppLayout`은 Tailwind utility로 Client와 동일한 375px~430px 모바일 화면 폭을 소유합니다.
 - `providers`: 전역 Context와 라이브러리 Provider 조합
 - `router`: route 정의, 보호 route와 navigation 설정
 
@@ -101,7 +102,7 @@ pages/{page}/
 - `styles`: 전역 스타일 진입점과 디자인 토큰
 - `types`: API envelope, pagination처럼 페이지와 무관한 공통 타입
 - `ui`: 버튼, 입력, 모달처럼 페이지 지식이 없는 재사용 UI
-- `utils`: 제품 문맥 없이 입력과 출력으로 설명할 수 있는 순수 유틸리티
+- `utils`: 제품 문맥 없이 입력과 출력으로 설명할 수 있는 순수 유틸리티. `cn`은 조건부 Tailwind class 조합과 충돌 해소를 담당합니다.
 
 `shared`를 공용 보관함으로 사용하지 않습니다. 로그인 또는 서류 심사처럼 특정 업무 의미가 들어간 코드는 형태가 재사용 가능해 보여도 소유 페이지에 유지합니다.
 

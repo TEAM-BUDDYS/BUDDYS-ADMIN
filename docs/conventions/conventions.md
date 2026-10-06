@@ -5,7 +5,7 @@
 ## Formatting And Linting
 
 - ESLint는 React Hooks, React Refresh, TypeScript, import 정렬과 미사용 import 규칙을 검사합니다.
-- Prettier는 semicolon, single quote, 2칸 들여쓰기, trailing comma와 80자 print width를 적용합니다.
+- Prettier는 semicolon, single quote, 2칸 들여쓰기, trailing comma와 80자 print width를 적용하고 Tailwind utility class 순서를 정리합니다.
 - ESLint와 Prettier의 규칙 충돌은 `eslint-config-prettier`로 방지합니다.
 - 전체 검사는 `pnpm lint`와 `pnpm format:check`, 자동 수정은 `pnpm lint:fix`와 `pnpm format`을 사용합니다.
 - pre-commit hook은 staged JavaScript·TypeScript 파일에 ESLint와 Prettier, JSON·CSS·HTML·Markdown·YAML 파일에 Prettier를 적용합니다.
@@ -31,6 +31,10 @@
 ## Component
 
 - 컴포넌트는 한 가지 화면 책임을 갖도록 유지하고 복잡해질 때만 분리합니다.
+- 정적 스타일은 Tailwind utility class를 우선 사용하고 반복되는 디자인 값은 `shared/styles/tokens`의 theme token을 사용합니다.
+- 조건부 class와 외부에서 받은 `className`을 조합할 때는 `shared/utils/cn`을 사용합니다.
+- 공통 컴포넌트에 반복되는 시각적 variant가 있을 때는 `class-variance-authority`를 사용하고 단순한 정적 class에는 불필요하게 적용하지 않습니다.
+- CSS Modules는 utility 조합으로 표현하기 어렵거나 별도의 스타일 격리가 필요한 경우에 사용합니다.
 - 재사용 컴포넌트는 named export를 우선합니다.
 - 앱 또는 route의 단일 진입 컴포넌트에는 default export를 허용합니다.
 - 자식 요소가 없으면 self-closing 형태를 사용합니다.
