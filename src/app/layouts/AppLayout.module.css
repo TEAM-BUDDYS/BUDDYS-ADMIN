@@ -1,9 +1,0 @@
-.container {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 375px;
-  max-width: 430px;
-  min-height: 100dvh;
-  margin: 0 auto;
-  background-color: var(--color-white);
-}

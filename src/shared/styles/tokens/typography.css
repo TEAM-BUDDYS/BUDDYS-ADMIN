@@ -1,7 +1,4 @@
-:root {
-  --font-pretendard:
-    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
-    system-ui, sans-serif;
+@theme {
   --font-sans: var(--font-pretendard);
 
   --text-title-b-28: 28px;

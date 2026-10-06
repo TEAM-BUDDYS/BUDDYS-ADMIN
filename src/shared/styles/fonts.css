@@ -5,3 +5,9 @@
   font-weight: 45 920;
   font-display: swap;
 }
+
+:root {
+  --font-pretendard:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, sans-serif;
+}
