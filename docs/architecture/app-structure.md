@@ -54,8 +54,12 @@ src/
     document-reviews/
       api/
       components/
+        DocumentReviewFilters.tsx
+        DocumentReviewItem.tsx
       hooks/
       types/
+        documentReview.types.ts
+      DocumentReviewsPage.tsx
 
   shared/
     api/
@@ -147,7 +151,7 @@ pages/{page}/
 | 서류 인증 목록   | `/document-reviews`                   | 상태 필터와 인증 요청 목록      |
 | 서류 인증 상세   | `/document-reviews/:documentReviewId` | 제출 서류 확인과 승인·반려 처리 |
 
-현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고, 이후 구현되는 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 서류 인증 route는 해당 화면을 구현할 때 확정합니다. 상태별 목록은 별도 페이지를 만들지 않고 query parameter 또는 화면 상태로 표현하는 것을 우선 검토합니다.
+현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`, `/document-reviews`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고 `/document-reviews`로 이동합니다. 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 상태별 목록은 별도 페이지를 만들지 않고 화면 상태로 표현하며, API 연동 시 query parameter와의 동기화를 검토합니다.
 
 ### `src/shared`
 
