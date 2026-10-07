@@ -1,13 +1,9 @@
-import type { ReactNode } from 'react';
+import { Outlet } from 'react-router';
 
-interface AppLayoutProps {
-  children: ReactNode;
-}
-
-export const AppLayout = ({ children }: AppLayoutProps) => {
+export const AppLayout = () => {
   return (
     <div className="mx-auto min-h-dvh w-full max-w-[430px] min-w-[375px] bg-white">
-      {children}
+      <Outlet />
     </div>
   );
 };

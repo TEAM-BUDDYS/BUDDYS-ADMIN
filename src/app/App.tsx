@@ -1,7 +1,7 @@
-import { AppLayout } from './layouts/AppLayout';
+import { AppRouter } from './router/AppRouter';
 
 function App() {
-  return <AppLayout>buddys-admin</AppLayout>;
+  return <AppRouter />;
 }
 
 export default App;
