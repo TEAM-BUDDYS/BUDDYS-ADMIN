@@ -4,4 +4,5 @@ export const ROUTES = {
   KAKAO_CALLBACK: '/auth/kakao/callback',
   ADMIN_ACCESS: '/auth/admin-access',
   ACCESS_DENIED: '/access-denied',
+  DOCUMENT_REVIEWS: '/document-reviews',
 } as const;

@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 
 import { AdminRoute } from '../../features/auth/AdminRoute';
 import { AccessDeniedPage } from '../../pages/access-denied/AccessDeniedPage';
+import { DocumentReviewsPage } from '../../pages/document-reviews/DocumentReviewsPage';
 import { KakaoCallbackPage } from '../../pages/kakao-callback/KakaoCallbackPage';
 import { LandingPage } from '../../pages/landing/LandingPage';
 import { LoginPage } from '../../pages/login/LoginPage';
@@ -40,7 +41,11 @@ export const AppRouter = () => {
             >
               <Route
                 path={ROUTES.ADMIN_ACCESS}
-                element={<Navigate replace to={ROUTES.LANDING} />}
+                element={<Navigate replace to={ROUTES.DOCUMENT_REVIEWS} />}
+              />
+              <Route
+                path={ROUTES.DOCUMENT_REVIEWS}
+                element={<DocumentReviewsPage />}
               />
             </Route>
             <Route
