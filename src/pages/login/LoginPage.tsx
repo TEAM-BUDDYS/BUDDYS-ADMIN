@@ -1,5 +1,4 @@
-import { Button } from '../../shared/ui/Button';
-import { KakaoIcon } from '../../shared/ui/icons';
+import { KakaoLoginButton } from '../../features/auth/KakaoLoginButton';
 import documentImage from './assets/document.svg';
 
 export const LoginPage = () => {
@@ -24,15 +23,7 @@ export const LoginPage = () => {
       </section>
 
       <div className="flex h-[150px] w-full items-end pb-8.5">
-        <Button
-          align="center"
-          className="bg-[#fae100]"
-          icon={<KakaoIcon />}
-          iconSize="lg"
-          variant="login"
-        >
-          카카오로 로그인
-        </Button>
+        <KakaoLoginButton />
       </div>
     </main>
   );
