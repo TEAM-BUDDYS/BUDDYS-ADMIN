@@ -2,31 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import type { ComponentPropsWithRef, ReactNode } from 'react';
 
 import { cn } from '../utils/cn';
-
-const buttonVariants = cva(
-  'flex h-13 w-full items-center rounded-xl px-4 py-0',
-  {
-    variants: {
-      variant: {
-        primary:
-          'text-body-sb-16 bg-mint-300 text-white enabled:active:bg-mint-400 disabled:bg-gray-50 disabled:text-gray-200',
-        secondary:
-          'text-body-sb-16 border border-gray-200 bg-white text-gray-800 enabled:active:border-mint-200 enabled:active:bg-mint-50 enabled:active:text-mint-300 disabled:text-gray-200',
-        neutral:
-          'text-body-m-15 bg-gray-50 text-gray-800 enabled:active:bg-gray-100 disabled:text-gray-200',
-        login: 'text-body-m-15 text-gray-800',
-      },
-      align: {
-        left: 'justify-start gap-3',
-        center: 'relative justify-center',
-      },
-    },
-    defaultVariants: {
-      variant: 'primary',
-      align: 'center',
-    },
-  },
-);
+import { buttonVariants } from './buttonVariants';
 
 const buttonIconVariants = cva(
   'inline-flex items-center text-current [&>svg]:size-full [&>svg]:shrink-0',
