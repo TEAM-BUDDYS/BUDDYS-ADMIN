@@ -36,7 +36,7 @@ vite.config.ts
 - `.husky`: Git hook에서 실행할 자동화 스크립트
 - `docs`: 프로젝트 구조, 컨벤션과 작업 절차 문서
 - `scripts`: SVG 아이콘처럼 반복 생성하는 코드 자산의 자동화 스크립트
-- `src`: React 애플리케이션 코드
+- `src`: `app`, `pages`, `features`, `shared` 경계로 구성된 React 애플리케이션 코드
 - `.gitignore`: 생성물, 설치 결과와 로컬 전용 파일 제외 규칙
 - `.prettierignore`: Prettier 포맷 대상 제외 규칙
 - `.prettierrc`: Prettier 코드 포맷과 Tailwind utility 정렬 설정

@@ -9,7 +9,12 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
-  globalIgnores(['dist', 'coverage', '.vercel']),
+  globalIgnores([
+    'dist',
+    'coverage',
+    '.vercel',
+    'src/shared/api/generated/schema.ts',
+  ]),
   {
     files: ['**/*.{js,mjs,cjs,ts,tsx}'],
     extends: [js.configs.recommended],

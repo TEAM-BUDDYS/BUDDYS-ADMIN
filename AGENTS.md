@@ -5,14 +5,14 @@
 ## Repository
 
 - Product: BUDDYS 운영자가 서류 인증을 조회하고 승인 또는 반려하는 관리자 웹
-- Stack: Vite, React, TypeScript
+- Stack: Vite, React, TypeScript, React Router, Tailwind CSS, ky
 - Package manager: pnpm
 - Jira key: `BDYFE-*`
 - Base branch: `develop`
 - Application code: `src`
-- Current architecture: `main -> app -> pages -> shared`
+- Current architecture: `main -> app -> pages/features -> shared`
 
-라우터, API 클라이언트, 서버 상태 라이브러리와 스타일링 라이브러리는 아직 확정되지 않았습니다. `package.json`과 현재 코드를 확인하지 않고 특정 라이브러리나 패턴이 이미 존재한다고 가정하지 않습니다.
+서버 상태 라이브러리는 아직 확정되지 않았습니다. `package.json`과 현재 코드를 확인하지 않고 특정 라이브러리나 패턴이 이미 존재한다고 가정하지 않습니다.
 
 ## Working Rule
 
@@ -51,9 +51,10 @@
 
 - `src/main.tsx`는 앱을 마운트하고, `src/app`은 전역 설정과 조합을 담당합니다.
 - `src/pages/{page}`는 URL에 대응하는 화면과 페이지 전용 코드를 소유합니다.
+- `src/features`는 여러 page와 app 경계에서 실제로 재사용되는 제품 기능을 소유합니다.
 - `src/shared`에는 여러 페이지에서 같은 의미로 재사용되고 특정 페이지 지식이 없는 코드만 둡니다.
-- 의존 방향은 `main -> app -> pages -> shared`이며 페이지 간 직접 import와 역방향 import를 만들지 않습니다.
-- 제품 기능 재사용이 실제로 생겼을 때만 `features` 같은 새 계층을 검토합니다.
+- 의존 방향은 `main -> app -> pages/features -> shared`이며 페이지 간 직접 import와 역방향 import를 만들지 않습니다.
+- 현재 계층으로 표현하기 어려운 책임이 생기더라도 새 계층은 실제 재사용과 복잡도 감소가 확인될 때만 검토합니다.
 
 세부 기준은 `docs/architecture/app-structure.md`를 따릅니다.
 

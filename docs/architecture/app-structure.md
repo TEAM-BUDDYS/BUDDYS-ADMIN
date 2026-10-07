@@ -1,6 +1,6 @@
 # App Structure
 
-BUDDYS-ADMIN은 Vite 기반 React SPA이며, 앱 전역 설정은 `src/app`, URL에 대응하는 화면과 페이지 전용 코드는 `src/pages`, 여러 페이지의 공통 기반은 `src/shared`에서 관리합니다.
+BUDDYS-ADMIN은 Vite 기반 React SPA이며, 앱 전역 설정은 `src/app`, URL에 대응하는 화면과 페이지 전용 코드는 `src/pages`, 여러 화면 경계에서 재사용되는 제품 기능은 `src/features`, 제품 지식이 없는 공통 기반은 `src/shared`에서 관리합니다.
 
 ## Current Structure
 
@@ -13,11 +13,25 @@ src/
     layouts/
       AppLayout.tsx
     providers/
+      AppProviders.tsx
     router/
       AppRouter.tsx
       routes.ts
 
+  features/
+    auth/
+      AuthSessionProvider.tsx
+      KakaoCallback.tsx
+      KakaoLoginButton.tsx
+      auth.api.ts
+      auth.types.ts
+      authSessionContext.ts
+      kakaoOAuth.ts
+
   pages/
+    kakao-callback/
+      KakaoCallbackPage.tsx
+
     landing/
       assets/
         earth.svg
@@ -40,6 +54,12 @@ src/
 
   shared/
     api/
+      generated/
+        schema.ts
+      apiClient.ts
+      authToken.ts
+      endpoints.ts
+      searchParams.ts
     assets/
       fonts/
       icons/
@@ -88,6 +108,14 @@ src/
 
 `app`은 페이지를 조합하고 전역 경계를 연결하지만 페이지 전용 API, form 상태 또는 업무 로직을 소유하지 않습니다.
 
+### `src/features`
+
+하나의 제품 기능이 여러 page와 app 경계에서 실제로 재사용될 때 사용합니다. 현재 `auth`는 로그인 화면, OAuth callback 화면과 앱 전역 session 복원에서 함께 사용되므로 `features/auth`가 소유합니다.
+
+- `features`는 route를 직접 정의하거나 특정 page를 import하지 않습니다.
+- transport와 token 갱신 같은 제품 지식 없는 기반은 `shared/api`를 사용합니다.
+- 한 page에만 속하는 기능은 미래 재사용을 예상해 `features`로 올리지 않습니다.
+
 ### `src/pages`
 
 `pages/{page}`는 URL에 대응하는 페이지 컴포넌트와 그 페이지에서만 사용하는 코드를 함께 소유합니다.
@@ -108,10 +136,11 @@ pages/{page}/
 | -------------- | ------------------------------------- | ------------------------------- |
 | 랜딩           | `/`                                   | 관리자 서비스 진입              |
 | 로그인         | `/login`                              | 관리자 인증 진입                |
+| 카카오 콜백    | `/auth/kakao/callback`                | 카카오 인가 완료와 세션 생성    |
 | 서류 인증 목록 | `/document-reviews`                   | 상태 필터와 인증 요청 목록      |
 | 서류 인증 상세 | `/document-reviews/:documentReviewId` | 제출 서류 확인과 승인·반려 처리 |
 
-현재 구현된 route는 `/`와 `/login`입니다. 서류 인증 route는 해당 화면을 구현할 때 확정합니다. 상태별 목록은 별도 페이지를 만들지 않고 query parameter 또는 화면 상태로 표현하는 것을 우선 검토합니다.
+현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`입니다. 서류 인증 route는 해당 화면을 구현할 때 확정합니다. 상태별 목록은 별도 페이지를 만들지 않고 query parameter 또는 화면 상태로 표현하는 것을 우선 검토합니다.
 
 ### `src/shared`
 
@@ -154,17 +183,21 @@ pages/{page}/
 - 한 페이지 영역에서만 사용하는 코드는 해당 `pages/{page}` 안에 둡니다.
 - 형태가 비슷하거나 미래에 재사용될 수 있다는 이유만으로 `shared`로 이동하지 않습니다.
 - 여러 페이지에서 실제로 재사용되고 사용 의미와 변경 이유가 같을 때만 `shared` 이동을 검토합니다.
+- 여러 page 또는 app 경계에서 재사용되는 제품 기능은 `features`가 소유합니다.
 - 특정 업무 용어, API 타입 또는 권한 규칙이 포함된 코드는 공통 UI와 분리해 소유 페이지에 유지합니다.
 - 외부 라이브러리 wrapper는 앱 전체에서 사용하는 기반 설정일 때만 `shared` 배치를 검토합니다.
-- 현재 계층으로 표현하기 어려운 제품 기능 재사용이 반복될 때만 `features` 같은 새 계층을 제안하고, 도입 전 의존 방향과 이동 범위를 문서화합니다.
+- 현재 계층으로 표현하기 어려운 책임이 반복될 때만 새 계층을 제안하고, 도입 전 의존 방향과 이동 범위를 문서화합니다.
 
 ## Dependency Direction
 
 허용 방향:
 
 ```text
-main -> app -> pages -> shared
+main -> app -> pages -> features -> shared
+app -> features
 app -> shared
+pages -> features
+pages -> shared
 main -> shared/styles
 ```
 
@@ -174,7 +207,9 @@ main -> shared/styles
 pages -> app
 shared -> pages
 shared -> app
+features -> app
+features -> pages
 page-a -> page-b
 ```
 
-페이지 간 코드 공유가 필요하면 해당 코드의 제품 의미를 먼저 확인합니다. 제품 문맥이 없는 공통 기반이면 `shared`로 이동하고, 제품 기능 자체가 공유되는 경우에는 새 기능 계층이 필요한지 `architecture-review`로 검토합니다.
+페이지 간 코드 공유가 필요하면 해당 코드의 제품 의미를 먼저 확인합니다. 제품 문맥이 없는 공통 기반이면 `shared`, 제품 기능 자체가 여러 화면 경계에서 공유되면 `features`로 이동할지 `architecture-review`로 검토합니다.

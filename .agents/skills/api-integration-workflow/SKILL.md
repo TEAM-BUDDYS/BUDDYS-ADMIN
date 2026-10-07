@@ -19,12 +19,13 @@ description: BUDDYS-ADMIN에서 브라우저 API 요청, 응답 타입, 인증, 
 1. endpoint, method, request, response, 인증과 오류 형식을 확인합니다.
 2. 이 저장소가 브라우저에서 실행되는 Vite SPA임을 기준으로 보안 경계를 확인합니다.
 3. 한 페이지 영역의 요청은 `src/pages/{page}/api`를 우선합니다.
-4. 여러 페이지가 사용하는 HTTP client, header와 공통 오류 변환만 `src/shared/api`에 둡니다.
-5. transport 타입과 화면 model을 무조건 하나로 합치지 않습니다.
-6. loading, empty, error, retry, disabled, submitting과 success 상태를 화면과 연결합니다.
-7. mutation 이후 목록과 상세 데이터의 일관성을 유지할 재조회 또는 cache 갱신 동작을 명시합니다.
-8. 인증 token, 사용자 정보와 오류 payload를 로그에 노출하지 않습니다.
-9. `verify-frontend`로 관련 정적 검사와 화면 상태를 확인합니다.
+4. 여러 page 또는 app 경계에서 사용하는 제품 기능의 API와 상태는 `src/features/{feature}`가 소유합니다.
+5. 여러 페이지가 사용하는 HTTP client, header와 공통 오류 변환만 `src/shared/api`에 둡니다.
+6. transport 타입과 화면 model을 무조건 하나로 합치지 않습니다.
+7. loading, empty, error, retry, disabled, submitting과 success 상태를 화면과 연결합니다.
+8. mutation 이후 목록과 상세 데이터의 일관성을 유지할 재조회 또는 cache 갱신 동작을 명시합니다.
+9. 인증 token, 사용자 정보와 오류 payload를 로그에 노출하지 않습니다.
+10. `verify-frontend`로 관련 정적 검사와 화면 상태를 확인합니다.
 
 ## Browser Boundary
 
@@ -45,6 +46,6 @@ description: BUDDYS-ADMIN에서 브라우저 API 요청, 응답 타입, 인증, 
 
 - request, response와 화면 model의 책임이 명확합니다.
 - UI 상태가 요청 결과와 연결됩니다.
-- API 코드가 올바른 page 또는 shared 경계에 있습니다.
+- API 코드가 올바른 page, feature 또는 shared 경계에 있습니다.
 - 민감한 값이 코드, 로그 또는 클라이언트 번들에 노출되지 않습니다.
 - mutation 이후 관련 화면의 데이터 일관성이 유지됩니다.

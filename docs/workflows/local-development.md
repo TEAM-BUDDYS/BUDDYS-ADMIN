@@ -66,4 +66,24 @@ pnpm preview
 - `VITE_` prefix가 붙은 변수는 클라이언트 번들에서 접근할 수 있으므로 공개 가능한 값만 사용합니다.
 - 관리자 비밀키, 서버 전용 token과 credential을 이 SPA에 넣지 않습니다.
 
-라우터, API base URL 또는 인증 방식이 확정되면 실제 변수 이름과 역할만 이 문서에 추가합니다.
+카카오 로그인에는 다음 공개 설정이 필요합니다.
+
+| Variable                  | Purpose                                       |
+| ------------------------- | --------------------------------------------- |
+| `VITE_API_BASE_URL`       | BUDDYS API base URL                           |
+| `VITE_KAKAO_REST_API_KEY` | 브라우저 OAuth 인가 요청용 Kakao REST API key |
+| `VITE_KAKAO_REDIRECT_URI` | Kakao Developers에 등록한 callback URL        |
+
+`.env.example`을 복사해 `.env.local`을 만들고 환경별 값을 입력합니다. `VITE_KAKAO_REDIRECT_URI`는 앱의 `/auth/kakao/callback` route와 일치해야 합니다.
+
+개발 서버와 프로덕션 빌드는 위 세 변수가 비어 있으면 시작하지 않습니다. GitHub Actions에서는 저장소의 `Settings > Secrets and variables > Actions > Variables`에 같은 이름의 Repository variable을 등록합니다. 공개 설정이므로 Secret이 아니라 Variable을 사용합니다.
+
+## API Types
+
+백엔드 OpenAPI 명세가 바뀌면 다음 명령으로 타입을 다시 생성합니다.
+
+```bash
+pnpm generate:types
+```
+
+생성된 `src/shared/api/generated/schema.ts`는 직접 수정하지 않고 명세 변경과 함께 커밋합니다.
