@@ -1,6 +1,6 @@
 ---
 name: repo-orientation
-description: BUDDYS-ADMIN에서 새 작업을 시작하기 전에 브랜치, 변경사항, Vite·React 설정, app/pages/shared 구조, 관련 문서와 기존 구현 패턴을 파악합니다. 기능 구현, 구조 변경 또는 코드 리뷰처럼 현재 저장소 맥락을 먼저 확인해야 하는 작업에 사용합니다.
+description: BUDDYS-ADMIN에서 새 작업을 시작하기 전에 브랜치, 변경사항, Vite·React 설정, app/pages/features/shared 구조, 관련 문서와 기존 구현 패턴을 파악합니다. 기능 구현, 구조 변경 또는 코드 리뷰처럼 현재 저장소 맥락을 먼저 확인해야 하는 작업에 사용합니다.
 ---
 
 # 저장소 파악

@@ -1,6 +1,6 @@
 # Coding Convention
 
-이 문서는 현재 Vite와 TypeScript 설정, 기존 코드와 합의된 `app/pages/shared` 구조를 기준으로 합니다. 코드 품질은 ESLint, 형식은 Prettier 설정을 원본으로 사용합니다.
+이 문서는 현재 Vite와 TypeScript 설정, 기존 코드와 합의된 `app/pages/features/shared` 구조를 기준으로 합니다. 코드 품질은 ESLint, 형식은 Prettier 설정을 원본으로 사용합니다.
 
 ## Formatting And Linting
 
@@ -100,7 +100,7 @@ export const DocumentReviewItem = ({
 
 - page 컴포넌트 안에 복잡한 form, API와 상태 변환 로직을 오래 두지 않습니다.
 - 해당 페이지에서만 사용하는 로직은 `pages/{page}/hooks`, API는 `pages/{page}/api`에 둡니다.
-- 여러 페이지에서 실제로 재사용되는 기반만 `shared` 이동을 검토합니다.
+- 여러 page 또는 app 경계에서 재사용되는 제품 로직은 `features`, 제품 지식이 없는 기반은 `shared` 이동을 검토합니다.
 - 서버 상태 또는 전역 상태 라이브러리가 설치되어 있다고 가정하지 않습니다.
 - 파생할 수 있는 값을 중복 state로 저장하지 않습니다.
 - `useEffect`는 외부 시스템과 동기화할 때 사용하고 단순한 값 계산에 사용하지 않습니다.

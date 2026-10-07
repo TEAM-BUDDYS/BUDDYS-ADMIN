@@ -1,6 +1,6 @@
 ---
 name: architecture-review
-description: BUDDYS-ADMIN의 파일 위치, app/pages/shared 소유권, 페이지 공통화와 의존 방향을 검토합니다. 폴더 구조 변경, 새 계층이나 추상화, 공통 코드 이동, 코드 리뷰 또는 리팩터링 판단에 사용합니다.
+description: BUDDYS-ADMIN의 파일 위치, app/pages/features/shared 소유권, 페이지 공통화와 의존 방향을 검토합니다. 폴더 구조 변경, 새 계층이나 추상화, 공통 코드 이동, 코드 리뷰 또는 리팩터링 판단에 사용합니다.
 ---
 
 # 아키텍처 리뷰
@@ -14,7 +14,7 @@ description: BUDDYS-ADMIN의 파일 위치, app/pages/shared 소유권, 페이�
 
 ## Review Order
 
-1. 기능을 소유하는 page 또는 app 경계가 명확한지 확인합니다.
+1. 기능을 소유하는 page, feature 또는 app 경계가 명확한지 확인합니다.
 2. `src/main.tsx`와 `src/app`에 페이지 전용 로직이 들어갔는지 확인합니다.
 3. 페이지가 다른 페이지를 직접 import하는지 확인합니다.
 4. `shared`가 특정 page나 관리자 업무에 종속됐는지 확인합니다.
@@ -30,7 +30,7 @@ description: BUDDYS-ADMIN의 파일 위치, app/pages/shared 소유권, 페이�
 
 리뷰에서는 금지된 import가 없는지, `shared` 이동 근거가 실제 사용처에서 확인되는지, 제품 업무 지식 없이 공통 코드의 책임을 설명할 수 있는지 검증합니다.
 
-현재 구조로 표현하기 어려운 제품 기능이 여러 페이지에서 반복되면 즉시 `shared`에 넣지 않습니다. 기능 소유권과 예상 의존 방향을 먼저 제시하고 `features` 같은 새 계층 도입이 기존 복잡도를 실제로 줄이는지 검토합니다.
+제품 기능이 여러 page 또는 app 경계에서 반복되면 즉시 `shared`에 넣지 않습니다. 제품 기능은 `features`, 제품 지식이 없는 기반은 `shared`가 소유하는지 확인하고, 새 계층은 기존 네 계층으로 표현하기 어려운 책임과 복잡도 감소가 확인될 때만 검토합니다.
 
 ## Review Output
 

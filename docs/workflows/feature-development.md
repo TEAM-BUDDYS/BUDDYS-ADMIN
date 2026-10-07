@@ -7,7 +7,7 @@
 1. Jira 또는 요청에서 목표, 범위와 완료 기준을 확인합니다.
 2. 현재 브랜치와 변경사항을 확인합니다.
 3. 관련 문서와 변경 대상에 가까운 기존 코드를 확인합니다.
-4. 코드 소유 위치를 `app`, `pages`, `shared` 중에서 결정합니다.
+4. 코드 소유 위치를 `app`, `pages`, `features`, `shared` 중에서 결정합니다.
 5. route, loading, empty, error, disabled, success와 완료 후 이동을 확인합니다.
 6. Figma가 제공되면 대상 node의 디자인 context, token과 asset을 확인하고 현재 스타일 구조에 맞게 변환합니다.
 7. API가 포함되면 endpoint, 인증, request, response와 오류 형식을 확인합니다.
@@ -22,8 +22,9 @@
 
 - 앱 전체 bootstrap, router, provider 또는 layout: `src/app`
 - 한 페이지 영역에 속하는 UI, hook, API와 type: `src/pages/{page}`
+- 여러 page 또는 app 경계에서 재사용되는 제품 기능: `src/features/{feature}`
 - 여러 페이지에서 의미와 변경 이유가 같은 공통 기반: `src/shared`
-- 현재 계층으로 표현하기 어려운 제품 기능 재사용: `architecture-review` 후 새 계층 검토
+- 현재 계층으로 표현하기 어려운 책임: `architecture-review` 후 새 계층 검토
 
 ## Completion
 
