@@ -25,6 +25,7 @@ svgr.config.mjs
 tsconfig.json
 tsconfig.app.json
 tsconfig.node.json
+vercel.json
 vite.config.ts
 ```
 
@@ -48,6 +49,7 @@ vite.config.ts
 - `pnpm-lock.yaml`: pnpm이 해석한 의존성 버전
 - `svgr.config.mjs`: 원본 SVG를 React 아이콘 컴포넌트로 변환하는 SVGR 설정
 - `tsconfig*.json`: 앱, Vite 설정과 project reference를 위한 TypeScript 설정
+- `vercel.json`: Vercel에서 SPA route의 직접 접근과 새로고침을 지원하는 rewrite 설정
 - `vite.config.ts`: React와 Tailwind를 포함한 Vite 빌드·플러그인 설정
 
 ## Rules
@@ -58,6 +60,7 @@ vite.config.ts
 - Agent 실행 절차는 `.agents/skills`에 둡니다.
 - GitHub Actions workflow는 `.github/workflows`에 두고 webhook과 credential은 코드가 아닌 GitHub Actions secret으로 관리합니다.
 - Vercel의 `.vercel`과 `.env.local`은 로컬 생성 파일로 취급해 커밋하지 않습니다.
+- Vercel SPA rewrite는 모든 route 요청을 `index.html`로 연결하고 브라우저 router가 최종 화면을 결정하도록 합니다.
 - Git hook은 `.husky`에 두고 staged 파일 검사는 `lint-staged.config.mjs`에서 관리합니다.
 - `AGENTS.md`는 세부 규칙을 복사하지 않고 Source of Truth를 연결합니다.
 - 새 루트 디렉터리는 역할과 실제 사용처가 명확할 때만 추가합니다.

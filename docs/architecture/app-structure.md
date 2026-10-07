@@ -14,12 +14,22 @@ src/
       AppLayout.tsx
     providers/
     router/
+      AppRouter.tsx
+      routes.ts
 
   pages/
+    landing/
+      assets/
+        earth.svg
+      LandingPage.tsx
+
     login/
       api/
+      assets/
+        document.svg
       components/
       hooks/
+      LoginPage.tsx
       types/
 
     document-reviews/
@@ -46,6 +56,7 @@ src/
     types/
     ui/
       icons/
+      buttonVariants.ts
       Button.tsx
       Header.tsx
       TextArea.tsx
@@ -93,13 +104,14 @@ pages/{page}/
 
 관리자 화면은 다음 책임 단위를 기준으로 시작합니다.
 
-| Page area      | Proposed URL                          | Responsibility                  |
+| Page area      | URL                                   | Responsibility                  |
 | -------------- | ------------------------------------- | ------------------------------- |
+| 랜딩           | `/`                                   | 관리자 서비스 진입              |
 | 로그인         | `/login`                              | 관리자 인증 진입                |
 | 서류 인증 목록 | `/document-reviews`                   | 상태 필터와 인증 요청 목록      |
 | 서류 인증 상세 | `/document-reviews/:documentReviewId` | 제출 서류 확인과 승인·반려 처리 |
 
-실제 route는 라우터를 도입할 때 요구사항과 함께 확정합니다. 상태별 목록은 별도 페이지를 만들지 않고 query parameter 또는 화면 상태로 표현하는 것을 우선 검토합니다.
+현재 구현된 route는 `/`와 `/login`입니다. 서류 인증 route는 해당 화면을 구현할 때 확정합니다. 상태별 목록은 별도 페이지를 만들지 않고 query parameter 또는 화면 상태로 표현하는 것을 우선 검토합니다.
 
 ### `src/shared`
 
@@ -119,9 +131,10 @@ pages/{page}/
 - route 정의는 `src/app/router`에서 관리합니다.
 - route 화면은 `src/pages`에서 import합니다.
 - route path 문자열을 여러 파일에 반복하지 않고 라우터를 도입할 때 한 위치에서 관리합니다.
+- React Router의 declarative mode를 사용하고 `AppRouter`에서 `BrowserRouter`, 공통 layout과 route 화면을 조합합니다.
 - 인증이 필요한 화면은 각 페이지에서 guard를 반복하기보다 router 또는 layout 경계에서 한 번 처리합니다.
 - 뒤로 가기, 직접 URL 접근과 새로고침 시 동작을 함께 확인합니다.
-- 현재 라우팅 라이브러리가 없으므로 특정 라이브러리 API를 문서나 코드에 미리 확정하지 않습니다.
+- 배포 환경의 직접 URL 접근은 루트 `vercel.json`의 SPA rewrite로 `index.html`에 연결합니다.
 
 ## Page State
 
