@@ -20,15 +20,20 @@ src/
 
   features/
     auth/
+      AdminRoute.tsx
       AuthSessionProvider.tsx
       KakaoCallback.tsx
       KakaoLoginButton.tsx
+      adminAccess.api.ts
       auth.api.ts
       auth.types.ts
       authSessionContext.ts
       kakaoOAuth.ts
 
   pages/
+    access-denied/
+      AccessDeniedPage.tsx
+
     kakao-callback/
       KakaoCallbackPage.tsx
 
@@ -132,15 +137,17 @@ pages/{page}/
 
 관리자 화면은 다음 책임 단위를 기준으로 시작합니다.
 
-| Page area      | URL                                   | Responsibility                  |
-| -------------- | ------------------------------------- | ------------------------------- |
-| 랜딩           | `/`                                   | 관리자 서비스 진입              |
-| 로그인         | `/login`                              | 관리자 인증 진입                |
-| 카카오 콜백    | `/auth/kakao/callback`                | 카카오 인가 완료와 세션 생성    |
-| 서류 인증 목록 | `/document-reviews`                   | 상태 필터와 인증 요청 목록      |
-| 서류 인증 상세 | `/document-reviews/:documentReviewId` | 제출 서류 확인과 승인·반려 처리 |
+| Page area        | URL                                   | Responsibility                  |
+| ---------------- | ------------------------------------- | ------------------------------- |
+| 랜딩             | `/`                                   | 관리자 서비스 진입              |
+| 로그인           | `/login`                              | 관리자 인증 진입                |
+| 카카오 콜백      | `/auth/kakao/callback`                | 카카오 인가 완료와 세션 생성    |
+| 관리자 권한 확인 | `/auth/admin-access`                  | 관리자 API 접근 권한 확인       |
+| 접근 제한        | `/access-denied`                      | 관리자 권한 없음 안내           |
+| 서류 인증 목록   | `/document-reviews`                   | 상태 필터와 인증 요청 목록      |
+| 서류 인증 상세   | `/document-reviews/:documentReviewId` | 제출 서류 확인과 승인·반려 처리 |
 
-현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`입니다. 서류 인증 route는 해당 화면을 구현할 때 확정합니다. 상태별 목록은 별도 페이지를 만들지 않고 query parameter 또는 화면 상태로 표현하는 것을 우선 검토합니다.
+현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고, 이후 구현되는 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 서류 인증 route는 해당 화면을 구현할 때 확정합니다. 상태별 목록은 별도 페이지를 만들지 않고 query parameter 또는 화면 상태로 표현하는 것을 우선 검토합니다.
 
 ### `src/shared`
 
