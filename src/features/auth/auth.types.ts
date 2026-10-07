@@ -15,4 +15,5 @@ export interface AuthSessionContextValue {
   status: AuthStatus;
   userId: number | null;
   authenticateWithKakao: (params: KakaoLoginParams) => Promise<AuthSession>;
+  invalidateSession: () => void;
 }

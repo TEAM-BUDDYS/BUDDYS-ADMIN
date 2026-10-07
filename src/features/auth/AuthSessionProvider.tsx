@@ -92,8 +92,13 @@ export const AuthSessionProvider = ({
   }, [clearSession, refreshSession, shouldRestoreSession]);
 
   const value = useMemo(
-    () => ({ status, userId, authenticateWithKakao }),
-    [authenticateWithKakao, status, userId],
+    () => ({
+      status,
+      userId,
+      authenticateWithKakao,
+      invalidateSession: clearSession,
+    }),
+    [authenticateWithKakao, clearSession, status, userId],
   );
 
   return (
