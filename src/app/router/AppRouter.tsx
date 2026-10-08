@@ -56,6 +56,7 @@ export const AppRouter = () => {
                 path={ROUTES.DOCUMENT_REVIEW_DETAIL}
                 element={
                   <DocumentReviewDetailPage
+                    accessDeniedPath={ROUTES.ACCESS_DENIED}
                     documentReviewsPath={ROUTES.DOCUMENT_REVIEWS}
                   />
                 }

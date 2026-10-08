@@ -10,7 +10,9 @@ export interface DocumentReview {
 }
 
 export interface DocumentReviewDetail extends DocumentReview {
+  documentUrl: string;
   originalFileName: string;
+  rejectionReason: string | null;
 }
 
 export interface DocumentReviewListPage {

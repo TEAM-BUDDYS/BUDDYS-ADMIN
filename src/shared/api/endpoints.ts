@@ -1,5 +1,7 @@
 export const ENDPOINTS = {
   ADMIN: {
+    VERIFICATION: (verificationId: number) =>
+      `api/v1/admin/verifications/exchange/${verificationId}`,
     VERIFICATIONS: 'api/v1/admin/verifications/exchange',
   },
   AUTH: {
