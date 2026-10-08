@@ -21,11 +21,22 @@ type GetDocumentReviewsQuery = NonNullable<
 type GetDocumentReviewDetailPath =
   operations['getVerification']['parameters']['path'];
 
+type ApproveDocumentReviewPath =
+  operations['approveVerification']['parameters']['path'];
+
+type RejectDocumentReviewPath =
+  operations['rejectVerification']['parameters']['path'];
+
 type GetDocumentReviewsResponse =
   components['schemas']['BaseResponseExchangeVerificationListResponse'];
 
 type GetDocumentReviewDetailResponse =
   components['schemas']['BaseResponseExchangeVerificationDetailResponse'];
+
+type DocumentReviewActionResponse = components['schemas']['BaseResponseVoid'];
+
+type RejectDocumentReviewRequest =
+  components['schemas']['ExchangeVerificationRejectRequest'];
 
 type DocumentReviewSummary =
   components['schemas']['ExchangeVerificationSummaryResponse'];
@@ -52,12 +63,26 @@ export interface GetDocumentReviewDetailParams {
   verificationId: GetDocumentReviewDetailPath['verificationId'];
 }
 
-type DocumentReviewRequestErrorKind = 'forbidden' | 'not-found' | 'request';
+export interface ApproveDocumentReviewParams {
+  verificationId: ApproveDocumentReviewPath['verificationId'];
+}
+
+export interface RejectDocumentReviewParams {
+  rejectionReason: RejectDocumentReviewRequest['rejectionReason'];
+  verificationId: RejectDocumentReviewPath['verificationId'];
+}
+
+type DocumentReviewRequestErrorKind =
+  | 'conflict'
+  | 'forbidden'
+  | 'not-found'
+  | 'request';
 
 const DOCUMENT_REVIEW_REQUEST_ERROR_MESSAGES: Record<
   DocumentReviewRequestErrorKind,
   string
 > = {
+  conflict: 'Document review was already processed',
   forbidden: 'Document reviews access is forbidden',
   'not-found': 'Document review was not found',
   request: 'Failed to load document reviews',
@@ -72,6 +97,25 @@ export class DocumentReviewRequestError extends Error {
     this.kind = kind;
   }
 }
+
+const DOCUMENT_REVIEW_REQUEST_ERROR_KIND_BY_STATUS: Partial<
+  Record<number, Exclude<DocumentReviewRequestErrorKind, 'request'>>
+> = {
+  403: 'forbidden',
+  404: 'not-found',
+  409: 'conflict',
+};
+
+const getDocumentReviewRequestError = (error: unknown) => {
+  if (!isHTTPError(error)) {
+    return null;
+  }
+
+  const kind =
+    DOCUMENT_REVIEW_REQUEST_ERROR_KIND_BY_STATUS[error.response.status];
+
+  return kind ? new DocumentReviewRequestError(kind) : null;
+};
 
 const DOCUMENT_REVIEW_STATUS_MAP: Record<
   DocumentReviewApiStatus,
@@ -178,6 +222,14 @@ const parseDocumentReviewDetailResponse = (
   return parseDocumentReviewDetail(response.data);
 };
 
+const parseDocumentReviewActionResponse = (
+  response: DocumentReviewActionResponse,
+) => {
+  if (response.success !== true) {
+    throw new DocumentReviewRequestError('request');
+  }
+};
+
 export const getDocumentReviews = async ({
   page,
   signal,
@@ -200,11 +252,7 @@ export const getDocumentReviews = async ({
 
     return parseDocumentReviewsResponse(response);
   } catch (error) {
-    if (isHTTPError(error) && error.response.status === 403) {
-      throw new DocumentReviewRequestError('forbidden');
-    }
-
-    throw error;
+    throw getDocumentReviewRequestError(error) ?? error;
   }
 };
 
@@ -219,17 +267,42 @@ export const getDocumentReviewDetail = async ({
 
     return parseDocumentReviewDetailResponse(response);
   } catch (error) {
-    if (isHTTPError(error)) {
-      if (error.response.status === 403) {
-        throw new DocumentReviewRequestError('forbidden');
-      }
+    throw getDocumentReviewRequestError(error) ?? error;
+  }
+};
 
-      if (error.response.status === 404) {
-        throw new DocumentReviewRequestError('not-found');
-      }
-    }
+export const approveDocumentReview = async ({
+  verificationId,
+}: ApproveDocumentReviewParams) => {
+  try {
+    const response = await apiClient
+      .patch(ENDPOINTS.ADMIN.VERIFICATION_APPROVE(verificationId))
+      .json<DocumentReviewActionResponse>();
 
-    throw error;
+    parseDocumentReviewActionResponse(response);
+  } catch (error) {
+    throw getDocumentReviewRequestError(error) ?? error;
+  }
+};
+
+export const rejectDocumentReview = async ({
+  rejectionReason,
+  verificationId,
+}: RejectDocumentReviewParams) => {
+  const request = {
+    rejectionReason,
+  } satisfies RejectDocumentReviewRequest;
+
+  try {
+    const response = await apiClient
+      .patch(ENDPOINTS.ADMIN.VERIFICATION_REJECT(verificationId), {
+        json: request,
+      })
+      .json<DocumentReviewActionResponse>();
+
+    parseDocumentReviewActionResponse(response);
+  } catch (error) {
+    throw getDocumentReviewRequestError(error) ?? error;
   }
 };
 
@@ -247,3 +320,8 @@ export const isDocumentReviewNotFoundError = (
   error: unknown,
 ): error is DocumentReviewRequestError =>
   isDocumentReviewRequestError(error) && error.kind === 'not-found';
+
+export const isDocumentReviewConflictError = (
+  error: unknown,
+): error is DocumentReviewRequestError =>
+  isDocumentReviewRequestError(error) && error.kind === 'conflict';
