@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 
 import { AdminRoute } from '../../features/auth/AdminRoute';
 import { AccessDeniedPage } from '../../pages/access-denied/AccessDeniedPage';
+import { DocumentReviewDetailPage } from '../../pages/document-reviews/DocumentReviewDetailPage';
 import { DocumentReviewsPage } from '../../pages/document-reviews/DocumentReviewsPage';
 import { KakaoCallbackPage } from '../../pages/kakao-callback/KakaoCallbackPage';
 import { LandingPage } from '../../pages/landing/LandingPage';
@@ -48,6 +49,14 @@ export const AppRouter = () => {
                 element={
                   <DocumentReviewsPage
                     accessDeniedPath={ROUTES.ACCESS_DENIED}
+                  />
+                }
+              />
+              <Route
+                path={ROUTES.DOCUMENT_REVIEW_DETAIL}
+                element={
+                  <DocumentReviewDetailPage
+                    documentReviewsPath={ROUTES.DOCUMENT_REVIEWS}
                   />
                 }
               />
