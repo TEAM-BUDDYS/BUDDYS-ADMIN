@@ -56,6 +56,8 @@ src/
         documentReviews.api.ts
         documentReviews.query.ts
       components/
+        DocumentReviewDetailContent.tsx
+        DocumentReviewDetailSkeleton.tsx
         DocumentReviewFilters.tsx
         DocumentReviewItem.tsx
         DocumentReviewList.tsx
@@ -63,6 +65,7 @@ src/
         DocumentReviewStatusBadge.tsx
       hooks/
         useDocumentReviewInfiniteScroll.ts
+        useDocumentReviewDetail.ts
         useDocumentReviews.ts
       types/
         documentReview.types.ts
@@ -161,7 +164,7 @@ pages/{page}/
 | 서류 인증 목록   | `/document-reviews`                   | 상태 필터와 인증 요청 목록      |
 | 서류 인증 상세   | `/document-reviews/:documentReviewId` | 제출 서류 확인과 승인·반려 처리 |
 
-현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`, `/document-reviews`, `/document-reviews/:documentReviewId`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고 `/document-reviews`로 이동합니다. 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 서류 인증 상태 필터는 별도 페이지를 만들지 않고 `status` query parameter와 동기화하며, 목록은 다음 페이지가 있을 때 무한 스크롤로 이어서 조회합니다. 목록 항목은 상세 route로 연결하고 상세 화면의 직접 URL 접근 시 뒤로가기는 목록 route를 fallback으로 사용합니다.
+현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`, `/document-reviews`, `/document-reviews/:documentReviewId`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고 `/document-reviews`로 이동합니다. 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 서류 인증 상태 필터는 별도 페이지를 만들지 않고 `status` query parameter와 동기화하며, 목록은 다음 페이지가 있을 때 무한 스크롤로 이어서 조회합니다. 목록 항목은 상세 route로 연결하고 상세 화면은 route의 인증 신청 ID로 요청 정보와 유효 시간이 있는 서류 열람 URL을 조회합니다. 상세 화면의 직접 URL 접근 시 뒤로가기는 목록 route를 fallback으로 사용합니다.
 
 ### `src/shared`
 
@@ -199,7 +202,7 @@ pages/{page}/
 
 빈 데이터는 오류로 처리하지 않습니다. 사용자에게 보여줄 오류 상태와 개발자가 진단할 오류 정보를 구분합니다.
 
-서버 상태는 TanStack Query로 관리합니다. 페이지 전용 query key, query option과 transport-to-view model 변환은 해당 `pages/{page}`가 소유하고, `app/providers`에는 Query client와 Provider 조합만 둡니다. 서류 인증 목록은 사용자 ID와 상태 필터를 query key에 포함해 계정과 필터 간 캐시를 분리합니다.
+서버 상태는 TanStack Query로 관리합니다. 페이지 전용 query key, query option과 transport-to-view model 변환은 해당 `pages/{page}`가 소유하고, `app/providers`에는 Query client와 Provider 조합만 둡니다. 서류 인증 목록은 사용자 ID와 상태 필터를 query key에 포함하고, 상세는 사용자 ID와 인증 신청 ID를 포함해 계정과 요청 간 캐시를 분리합니다. 상세 조회에서 발급하는 서류 열람 URL은 유효 시간 안에 갱신합니다.
 
 ## Commonization Rules
 
