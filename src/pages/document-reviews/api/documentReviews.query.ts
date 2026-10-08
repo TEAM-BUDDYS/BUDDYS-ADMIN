@@ -1,13 +1,15 @@
-import { infiniteQueryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { isHTTPError } from 'ky';
 
 import type { DocumentReviewFilter } from '../types/documentReview.types';
 import {
+  getDocumentReviewDetail,
   getDocumentReviews,
-  isDocumentReviewsForbiddenError,
+  isDocumentReviewRequestError,
 } from './documentReviews.api';
 
 const DOCUMENT_REVIEWS_PAGE_SIZE = 20;
+const DOCUMENT_REVIEW_DETAIL_REFRESH_INTERVAL = 4 * 60_000;
 
 const DOCUMENT_REVIEW_API_STATUS = {
   approved: 'APPROVED',
@@ -17,8 +19,21 @@ const DOCUMENT_REVIEW_API_STATUS = {
 
 export const documentReviewQueryKeys = {
   all: ['document-reviews'] as const,
+  detail: (userId: number | null, verificationId: number | null) =>
+    [...documentReviewQueryKeys.all, 'detail', userId, verificationId] as const,
   list: (userId: number | null, filter: DocumentReviewFilter) =>
     [...documentReviewQueryKeys.all, 'list', userId, filter] as const,
+};
+
+const shouldRetryDocumentReviewQuery = (failureCount: number, error: Error) => {
+  if (
+    isDocumentReviewRequestError(error) ||
+    (isHTTPError(error) && error.response.status < 500)
+  ) {
+    return false;
+  }
+
+  return failureCount < 1;
 };
 
 export const documentReviewsInfiniteQueryOptions = (
@@ -39,15 +54,27 @@ export const documentReviewsInfiniteQueryOptions = (
       lastPage.hasNext ? lastPage.page + 1 : undefined,
     initialPageParam: 0,
     queryKey: documentReviewQueryKeys.list(userId, filter),
-    retry: (failureCount, error) => {
-      if (
-        isDocumentReviewsForbiddenError(error) ||
-        (isHTTPError(error) && error.response.status < 500)
-      ) {
-        return false;
+    retry: shouldRetryDocumentReviewQuery,
+    staleTime: 60_000,
+  });
+
+export const documentReviewDetailQueryOptions = (
+  verificationId: number | null,
+  userId: number | null,
+) =>
+  queryOptions({
+    enabled: verificationId !== null && userId !== null,
+    queryFn: ({ signal }) => {
+      if (verificationId === null) {
+        throw new Error('Document review ID is required');
       }
 
-      return failureCount < 1;
+      return getDocumentReviewDetail({ signal, verificationId });
     },
-    staleTime: 60_000,
+    queryKey: documentReviewQueryKeys.detail(userId, verificationId),
+    refetchInterval: DOCUMENT_REVIEW_DETAIL_REFRESH_INTERVAL,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+    retry: shouldRetryDocumentReviewQuery,
+    staleTime: DOCUMENT_REVIEW_DETAIL_REFRESH_INTERVAL,
   });

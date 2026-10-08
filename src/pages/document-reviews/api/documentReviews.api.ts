@@ -9,6 +9,7 @@ import type {
 import { createSearchParams } from '../../../shared/api/searchParams';
 import type {
   DocumentReview,
+  DocumentReviewDetail,
   DocumentReviewListPage,
   DocumentReviewStatus,
 } from '../types/documentReview.types';
@@ -17,13 +18,27 @@ type GetDocumentReviewsQuery = NonNullable<
   operations['getVerifications']['parameters']['query']
 >;
 
+type GetDocumentReviewDetailPath =
+  operations['getVerification']['parameters']['path'];
+
 type GetDocumentReviewsResponse =
   components['schemas']['BaseResponseExchangeVerificationListResponse'];
+
+type GetDocumentReviewDetailResponse =
+  components['schemas']['BaseResponseExchangeVerificationDetailResponse'];
 
 type DocumentReviewSummary =
   components['schemas']['ExchangeVerificationSummaryResponse'];
 
+type DocumentReviewDetailResponse =
+  components['schemas']['ExchangeVerificationDetailResponse'];
+
 type DocumentReviewApiStatus = NonNullable<DocumentReviewSummary['status']>;
+
+type DocumentReviewBaseResponse = Pick<
+  DocumentReviewSummary,
+  'nickname' | 'status' | 'submittedAt' | 'verificationId'
+>;
 
 export interface GetDocumentReviewsParams {
   page: number;
@@ -32,16 +47,28 @@ export interface GetDocumentReviewsParams {
   status?: NonNullable<GetDocumentReviewsQuery['status']>;
 }
 
-export class DocumentReviewsRequestError extends Error {
-  readonly kind: 'forbidden' | 'request';
+export interface GetDocumentReviewDetailParams {
+  signal?: AbortSignal;
+  verificationId: GetDocumentReviewDetailPath['verificationId'];
+}
 
-  constructor(kind: 'forbidden' | 'request') {
-    super(
-      kind === 'forbidden'
-        ? 'Document reviews access is forbidden'
-        : 'Failed to load document reviews',
-    );
-    this.name = 'DocumentReviewsRequestError';
+type DocumentReviewRequestErrorKind = 'forbidden' | 'not-found' | 'request';
+
+const DOCUMENT_REVIEW_REQUEST_ERROR_MESSAGES: Record<
+  DocumentReviewRequestErrorKind,
+  string
+> = {
+  forbidden: 'Document reviews access is forbidden',
+  'not-found': 'Document review was not found',
+  request: 'Failed to load document reviews',
+};
+
+export class DocumentReviewRequestError extends Error {
+  readonly kind: DocumentReviewRequestErrorKind;
+
+  constructor(kind: DocumentReviewRequestErrorKind) {
+    super(DOCUMENT_REVIEW_REQUEST_ERROR_MESSAGES[kind]);
+    this.name = 'DocumentReviewRequestError';
     this.kind = kind;
   }
 }
@@ -60,8 +87,8 @@ const isDocumentReviewApiStatus = (
 ): status is DocumentReviewApiStatus =>
   Object.hasOwn(DOCUMENT_REVIEW_STATUS_MAP, status);
 
-const parseDocumentReview = (
-  documentReview: DocumentReviewSummary,
+const parseDocumentReviewBase = (
+  documentReview: DocumentReviewBaseResponse,
 ): DocumentReview => {
   const { nickname, status, submittedAt, verificationId } = documentReview;
 
@@ -73,7 +100,7 @@ const parseDocumentReview = (
     typeof status !== 'string' ||
     !isDocumentReviewApiStatus(status)
   ) {
-    throw new DocumentReviewsRequestError('request');
+    throw new DocumentReviewRequestError('request');
   }
 
   return {
@@ -81,6 +108,38 @@ const parseDocumentReview = (
     applicantName: nickname,
     submittedAt,
     status: DOCUMENT_REVIEW_STATUS_MAP[status],
+  };
+};
+
+const isHttpUrl = (value: string) => {
+  try {
+    const url = new URL(value);
+
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
+const parseDocumentReviewDetail = (
+  documentReview: DocumentReviewDetailResponse,
+): DocumentReviewDetail => {
+  const { documentUrl, originalFileName, rejectionReason } = documentReview;
+
+  if (
+    typeof documentUrl !== 'string' ||
+    !isHttpUrl(documentUrl) ||
+    typeof originalFileName !== 'string' ||
+    (rejectionReason !== null && typeof rejectionReason !== 'string')
+  ) {
+    throw new DocumentReviewRequestError('request');
+  }
+
+  return {
+    ...parseDocumentReviewBase(documentReview),
+    documentUrl,
+    originalFileName,
+    rejectionReason,
   };
 };
 
@@ -95,14 +154,28 @@ const parseDocumentReviewsResponse = (
     typeof hasNext !== 'boolean' ||
     typeof page !== 'number'
   ) {
-    throw new DocumentReviewsRequestError('request');
+    throw new DocumentReviewRequestError('request');
   }
 
   return {
-    documentReviews: content.map(parseDocumentReview),
+    documentReviews: content.map(parseDocumentReviewBase),
     hasNext,
     page,
   };
+};
+
+const parseDocumentReviewDetailResponse = (
+  response: GetDocumentReviewDetailResponse,
+): DocumentReviewDetail => {
+  if (
+    response.success !== true ||
+    response.data === undefined ||
+    response.data === null
+  ) {
+    throw new DocumentReviewRequestError('request');
+  }
+
+  return parseDocumentReviewDetail(response.data);
 };
 
 export const getDocumentReviews = async ({
@@ -128,14 +201,49 @@ export const getDocumentReviews = async ({
     return parseDocumentReviewsResponse(response);
   } catch (error) {
     if (isHTTPError(error) && error.response.status === 403) {
-      throw new DocumentReviewsRequestError('forbidden');
+      throw new DocumentReviewRequestError('forbidden');
     }
 
     throw error;
   }
 };
 
-export const isDocumentReviewsForbiddenError = (
+export const getDocumentReviewDetail = async ({
+  signal,
+  verificationId,
+}: GetDocumentReviewDetailParams): Promise<DocumentReviewDetail> => {
+  try {
+    const response = await apiClient
+      .get(ENDPOINTS.ADMIN.VERIFICATION(verificationId), { signal })
+      .json<GetDocumentReviewDetailResponse>();
+
+    return parseDocumentReviewDetailResponse(response);
+  } catch (error) {
+    if (isHTTPError(error)) {
+      if (error.response.status === 403) {
+        throw new DocumentReviewRequestError('forbidden');
+      }
+
+      if (error.response.status === 404) {
+        throw new DocumentReviewRequestError('not-found');
+      }
+    }
+
+    throw error;
+  }
+};
+
+export const isDocumentReviewRequestError = (
   error: unknown,
-): error is DocumentReviewsRequestError =>
-  error instanceof DocumentReviewsRequestError && error.kind === 'forbidden';
+): error is DocumentReviewRequestError =>
+  error instanceof DocumentReviewRequestError;
+
+export const isDocumentReviewForbiddenError = (
+  error: unknown,
+): error is DocumentReviewRequestError =>
+  isDocumentReviewRequestError(error) && error.kind === 'forbidden';
+
+export const isDocumentReviewNotFoundError = (
+  error: unknown,
+): error is DocumentReviewRequestError =>
+  isDocumentReviewRequestError(error) && error.kind === 'not-found';

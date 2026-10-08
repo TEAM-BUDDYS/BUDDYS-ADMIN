@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
-import { isDocumentReviewsForbiddenError } from '../api/documentReviews.api';
+import { isDocumentReviewForbiddenError } from '../api/documentReviews.api';
 import { documentReviewsInfiniteQueryOptions } from '../api/documentReviews.query';
 import type { DocumentReviewFilter } from '../types/documentReview.types';
 
@@ -45,7 +45,7 @@ export const useDocumentReviews = (
   return {
     documentReviews: data?.pages.flatMap((page) => page.documentReviews) ?? [],
     hasNextPage,
-    isForbidden: isDocumentReviewsForbiddenError(error),
+    isForbidden: isDocumentReviewForbiddenError(error),
     isInitialError: isError && data === undefined,
     isInitialLoading: isPending,
     isLoadingNextPage: isFetchingNextPage,
