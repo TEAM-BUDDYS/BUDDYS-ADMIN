@@ -9,6 +9,10 @@ export interface DocumentReview {
   status: DocumentReviewStatus;
 }
 
+export interface DocumentReviewDetail extends DocumentReview {
+  originalFileName: string;
+}
+
 export interface DocumentReviewListPage {
   documentReviews: DocumentReview[];
   hasNext: boolean;
