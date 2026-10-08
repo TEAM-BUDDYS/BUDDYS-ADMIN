@@ -53,10 +53,16 @@ src/
 
     document-reviews/
       api/
+        documentReviews.api.ts
+        documentReviews.query.ts
       components/
         DocumentReviewFilters.tsx
         DocumentReviewItem.tsx
+        DocumentReviewList.tsx
+        DocumentReviewListSkeleton.tsx
       hooks/
+        useDocumentReviewInfiniteScroll.ts
+        useDocumentReviews.ts
       types/
         documentReview.types.ts
       DocumentReviewsPage.tsx
@@ -113,7 +119,7 @@ src/
 - `providers`: 전역 Context와 라이브러리 Provider 조합
 - `router`: route 정의, 보호 route와 navigation 설정
 
-라우터나 전역 Provider 라이브러리가 아직 설치되지 않았다면 임의로 존재한다고 가정하지 않습니다. 기능 구현에 실제로 필요할 때 현재 요구사항과 `package.json`을 기준으로 도입 여부를 결정합니다.
+`AppProviders`는 인증 세션과 TanStack Query의 전역 Provider를 조합합니다. Query client는 앱 생명주기 동안 한 번만 생성하며, endpoint별 query key와 재시도 정책은 데이터를 소유한 page 또는 feature에서 정의합니다.
 
 `app`은 페이지를 조합하고 전역 경계를 연결하지만 페이지 전용 API, form 상태 또는 업무 로직을 소유하지 않습니다.
 
@@ -151,7 +157,7 @@ pages/{page}/
 | 서류 인증 목록   | `/document-reviews`                   | 상태 필터와 인증 요청 목록      |
 | 서류 인증 상세   | `/document-reviews/:documentReviewId` | 제출 서류 확인과 승인·반려 처리 |
 
-현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`, `/document-reviews`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고 `/document-reviews`로 이동합니다. 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 상태별 목록은 별도 페이지를 만들지 않고 화면 상태로 표현하며, API 연동 시 query parameter와의 동기화를 검토합니다.
+현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`, `/document-reviews`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고 `/document-reviews`로 이동합니다. 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 서류 인증 상태 필터는 별도 페이지를 만들지 않고 `status` query parameter와 동기화하며, 목록은 다음 페이지가 있을 때 무한 스크롤로 이어서 조회합니다.
 
 ### `src/shared`
 
@@ -187,7 +193,9 @@ pages/{page}/
 - disabled 또는 submitting
 - success
 
-빈 데이터는 오류로 처리하지 않습니다. 사용자에게 보여줄 오류 상태와 개발자가 진단할 오류 정보를 구분합니다. 특정 데이터 fetching 또는 form 라이브러리는 실제로 도입된 뒤 그 패턴을 문서에 추가합니다.
+빈 데이터는 오류로 처리하지 않습니다. 사용자에게 보여줄 오류 상태와 개발자가 진단할 오류 정보를 구분합니다.
+
+서버 상태는 TanStack Query로 관리합니다. 페이지 전용 query key, query option과 transport-to-view model 변환은 해당 `pages/{page}`가 소유하고, `app/providers`에는 Query client와 Provider 조합만 둡니다. 서류 인증 목록은 사용자 ID와 상태 필터를 query key에 포함해 계정과 필터 간 캐시를 분리합니다.
 
 ## Commonization Rules
 

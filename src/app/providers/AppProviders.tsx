@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { type ReactNode, useState } from 'react';
 import { useLocation } from 'react-router';
 
 import { AuthSessionProvider } from '../../features/auth/AuthSessionProvider';
@@ -10,12 +11,25 @@ interface AppProvidersProps {
 
 export const AppProviders = ({ children }: AppProvidersProps) => {
   const { pathname } = useLocation();
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: true,
+            retry: false,
+          },
+        },
+      }),
+  );
 
   return (
-    <AuthSessionProvider
-      shouldRestoreSession={pathname !== ROUTES.KAKAO_CALLBACK}
-    >
-      {children}
-    </AuthSessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthSessionProvider
+        shouldRestoreSession={pathname !== ROUTES.KAKAO_CALLBACK}
+      >
+        {children}
+      </AuthSessionProvider>
+    </QueryClientProvider>
   );
 };

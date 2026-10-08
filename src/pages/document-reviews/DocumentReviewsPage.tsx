@@ -1,53 +1,69 @@
-import { useState } from 'react';
+import { Navigate, useSearchParams } from 'react-router';
 
+import { useAuthSession } from '../../features/auth/authSessionContext';
 import { Header } from '../../shared/ui/Header';
 import { DocumentReviewFilters } from './components/DocumentReviewFilters';
-import { DocumentReviewItem } from './components/DocumentReviewItem';
-import type {
-  DocumentReview,
-  DocumentReviewFilter,
-} from './types/documentReview.types';
+import { DocumentReviewList } from './components/DocumentReviewList';
+import { useDocumentReviewInfiniteScroll } from './hooks/useDocumentReviewInfiniteScroll';
+import { useDocumentReviews } from './hooks/useDocumentReviews';
+import type { DocumentReviewFilter } from './types/documentReview.types';
 
-const DOCUMENT_REVIEWS: DocumentReview[] = [
-  {
-    id: 1,
-    applicantName: '지현',
-    requestedAt: '2026.08.30',
-    status: 'pending',
-  },
-  {
-    id: 2,
-    applicantName: '지현',
-    requestedAt: '2026.08.30',
-    status: 'approved',
-  },
-  {
-    id: 3,
-    applicantName: '지현',
-    requestedAt: '2026.08.30',
-    status: 'rejected',
-  },
-  {
-    id: 4,
-    applicantName: '지현',
-    requestedAt: '2026.08.30',
-    status: 'approved',
-  },
-  {
-    id: 5,
-    applicantName: '지현',
-    requestedAt: '2026.08.30',
-    status: 'approved',
-  },
-];
+interface DocumentReviewsPageProps {
+  accessDeniedPath: string;
+}
 
-export const DocumentReviewsPage = () => {
-  const [selectedFilter, setSelectedFilter] =
-    useState<DocumentReviewFilter>('all');
+const DOCUMENT_REVIEW_FILTERS = new Set<DocumentReviewFilter>([
+  'all',
+  'pending',
+  'approved',
+  'rejected',
+]);
 
-  const filteredDocumentReviews = DOCUMENT_REVIEWS.filter(
-    ({ status }) => selectedFilter === 'all' || status === selectedFilter,
-  );
+const parseDocumentReviewFilter = (
+  value: string | null,
+): DocumentReviewFilter =>
+  value && DOCUMENT_REVIEW_FILTERS.has(value as DocumentReviewFilter)
+    ? (value as DocumentReviewFilter)
+    : 'all';
+
+export const DocumentReviewsPage = ({
+  accessDeniedPath,
+}: DocumentReviewsPageProps) => {
+  const { userId } = useAuthSession();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedFilter = parseDocumentReviewFilter(searchParams.get('status'));
+  const {
+    documentReviews,
+    hasNextPage,
+    isForbidden,
+    isInitialError,
+    isInitialLoading,
+    isLoadingNextPage,
+    isNextPageError,
+    loadMore,
+    retryInitialLoad,
+    retryNextPage,
+  } = useDocumentReviews(selectedFilter, userId);
+  const sentinelRef = useDocumentReviewInfiniteScroll({
+    enabled: Boolean(hasNextPage && !isLoadingNextPage && !isNextPageError),
+    onLoadMore: loadMore,
+  });
+
+  const handleFilterChange = (filter: DocumentReviewFilter) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+
+    if (filter === 'all') {
+      nextSearchParams.delete('status');
+    } else {
+      nextSearchParams.set('status', filter);
+    }
+
+    setSearchParams(nextSearchParams);
+  };
+
+  if (isForbidden) {
+    return <Navigate replace to={accessDeniedPath} />;
+  }
 
   return (
     <div className="min-h-dvh bg-white">
@@ -61,17 +77,20 @@ export const DocumentReviewsPage = () => {
       <main>
         <DocumentReviewFilters
           selectedFilter={selectedFilter}
-          onFilterChange={setSelectedFilter}
+          onFilterChange={handleFilterChange}
         />
 
-        <ul className="mt-3.5 flex flex-col gap-3">
-          {filteredDocumentReviews.map((documentReview) => (
-            <DocumentReviewItem
-              key={documentReview.id}
-              documentReview={documentReview}
-            />
-          ))}
-        </ul>
+        <DocumentReviewList
+          documentReviews={documentReviews}
+          hasNextPage={Boolean(hasNextPage)}
+          isInitialError={isInitialError}
+          isInitialLoading={isInitialLoading}
+          isLoadingNextPage={isLoadingNextPage}
+          isNextPageError={isNextPageError}
+          sentinelRef={sentinelRef}
+          onRetryInitialLoad={retryInitialLoad}
+          onRetryNextPage={retryNextPage}
+        />
       </main>
     </div>
   );

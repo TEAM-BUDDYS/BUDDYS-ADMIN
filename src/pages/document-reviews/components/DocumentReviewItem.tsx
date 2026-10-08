@@ -13,10 +13,27 @@ const STATUS_LABELS: Record<DocumentReviewStatus, string> = {
   rejected: '반려',
 };
 
+const documentReviewDateFormatter = new Intl.DateTimeFormat('ko-KR', {
+  day: '2-digit',
+  month: '2-digit',
+  timeZone: 'Asia/Seoul',
+  year: 'numeric',
+});
+
+const formatSubmittedAt = (submittedAt: string) => {
+  const dateParts = Object.fromEntries(
+    documentReviewDateFormatter
+      .formatToParts(new Date(submittedAt))
+      .map(({ type, value }) => [type, value]),
+  );
+
+  return `${dateParts.year}.${dateParts.month}.${dateParts.day}`;
+};
+
 export const DocumentReviewItem = ({
   documentReview,
 }: DocumentReviewItemProps) => {
-  const { applicantName, requestedAt, status } = documentReview;
+  const { applicantName, status, submittedAt } = documentReview;
 
   return (
     <li className="flex h-[59px] items-center px-4 py-[7px]">
@@ -27,9 +44,9 @@ export const DocumentReviewItem = ({
           </h2>
           <time
             className="text-caption-m-12 truncate text-gray-500"
-            dateTime={requestedAt.replaceAll('.', '-')}
+            dateTime={submittedAt}
           >
-            {requestedAt}
+            {formatSubmittedAt(submittedAt)}
           </time>
         </div>
 
