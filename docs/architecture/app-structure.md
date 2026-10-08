@@ -60,11 +60,15 @@ src/
         DocumentReviewItem.tsx
         DocumentReviewList.tsx
         DocumentReviewListSkeleton.tsx
+        DocumentReviewStatusBadge.tsx
       hooks/
         useDocumentReviewInfiniteScroll.ts
         useDocumentReviews.ts
       types/
         documentReview.types.ts
+      utils/
+        formatDocumentReviewDate.ts
+      DocumentReviewDetailPage.tsx
       DocumentReviewsPage.tsx
 
   shared/
@@ -157,7 +161,7 @@ pages/{page}/
 | 서류 인증 목록   | `/document-reviews`                   | 상태 필터와 인증 요청 목록      |
 | 서류 인증 상세   | `/document-reviews/:documentReviewId` | 제출 서류 확인과 승인·반려 처리 |
 
-현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`, `/document-reviews`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고 `/document-reviews`로 이동합니다. 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 서류 인증 상태 필터는 별도 페이지를 만들지 않고 `status` query parameter와 동기화하며, 목록은 다음 페이지가 있을 때 무한 스크롤로 이어서 조회합니다.
+현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`, `/document-reviews`, `/document-reviews/:documentReviewId`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고 `/document-reviews`로 이동합니다. 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 서류 인증 상태 필터는 별도 페이지를 만들지 않고 `status` query parameter와 동기화하며, 목록은 다음 페이지가 있을 때 무한 스크롤로 이어서 조회합니다. 목록 항목은 상세 route로 연결하고 상세 화면의 직접 URL 접근 시 뒤로가기는 목록 route를 fallback으로 사용합니다.
 
 ### `src/shared`
 
