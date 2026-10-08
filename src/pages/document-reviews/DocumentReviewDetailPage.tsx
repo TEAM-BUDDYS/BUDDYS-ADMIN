@@ -5,6 +5,7 @@ import { Button } from '../../shared/ui/Button';
 import { Header } from '../../shared/ui/Header';
 import { DocumentReviewDetailContent } from './components/DocumentReviewDetailContent';
 import { DocumentReviewDetailSkeleton } from './components/DocumentReviewDetailSkeleton';
+import { useDocumentReviewActions } from './hooks/useDocumentReviewActions';
 import { useDocumentReviewDetail } from './hooks/useDocumentReviewDetail';
 
 interface DocumentReviewDetailPageProps {
@@ -64,6 +65,17 @@ export const DocumentReviewDetailPage = ({
   const documentReviewId = parseDocumentReviewId(documentReviewIdParam);
   const { documentReview, isError, isForbidden, isLoading, isNotFound, retry } =
     useDocumentReviewDetail(documentReviewId, userId);
+  const {
+    actionErrorMessage,
+    actionSuccessMessage,
+    approve,
+    isApproving,
+    isForbidden: isActionForbidden,
+    isNotFound: isActionNotFound,
+    isRejecting,
+    reject,
+    resetActionError,
+  } = useDocumentReviewActions(documentReviewId, userId);
 
   const handleBackClick = () => {
     if (location.key === 'default') {
@@ -78,12 +90,12 @@ export const DocumentReviewDetailPage = ({
     navigate(documentReviewsPath, { replace: true });
   };
 
-  if (isForbidden) {
+  if (isForbidden || isActionForbidden) {
     return <Navigate replace to={accessDeniedPath} />;
   }
 
   const hasInvalidId = documentReviewId === null;
-  const showNotFound = hasInvalidId || isNotFound;
+  const showNotFound = hasInvalidId || isNotFound || isActionNotFound;
 
   return (
     <div className="flex min-h-dvh flex-col bg-white">
@@ -99,8 +111,15 @@ export const DocumentReviewDetailPage = ({
         <DocumentReviewDetailError isNotFound={false} onAction={retry} />
       ) : (
         <DocumentReviewDetailContent
+          actionErrorMessage={actionErrorMessage}
+          actionSuccessMessage={actionSuccessMessage}
           documentReview={documentReview}
+          isApproving={isApproving}
+          isRejecting={isRejecting}
           key={`${documentReview.id}:${documentReview.status}:${documentReview.rejectionReason ?? ''}`}
+          onApprove={approve}
+          onReject={reject}
+          onResetActionError={resetActionError}
         />
       )}
     </div>

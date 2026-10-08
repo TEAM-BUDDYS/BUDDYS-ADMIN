@@ -19,10 +19,14 @@ const DOCUMENT_REVIEW_API_STATUS = {
 
 export const documentReviewQueryKeys = {
   all: ['document-reviews'] as const,
+  details: (userId: number | null) =>
+    [...documentReviewQueryKeys.all, 'detail', userId] as const,
   detail: (userId: number | null, verificationId: number | null) =>
-    [...documentReviewQueryKeys.all, 'detail', userId, verificationId] as const,
+    [...documentReviewQueryKeys.details(userId), verificationId] as const,
+  lists: (userId: number | null) =>
+    [...documentReviewQueryKeys.all, 'list', userId] as const,
   list: (userId: number | null, filter: DocumentReviewFilter) =>
-    [...documentReviewQueryKeys.all, 'list', userId, filter] as const,
+    [...documentReviewQueryKeys.lists(userId), filter] as const,
 };
 
 const shouldRetryDocumentReviewQuery = (failureCount: number, error: Error) => {
