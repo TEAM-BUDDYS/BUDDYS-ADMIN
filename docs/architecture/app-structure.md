@@ -1,0 +1,242 @@
+# App Structure
+
+BUDDYS-ADMIN은 Vite 기반 React SPA이며, 앱 전역 설정은 `src/app`, URL에 대응하는 화면과 페이지 전용 코드는 `src/pages`, 여러 화면 경계에서 재사용되는 제품 기능은 `src/features`, 제품 지식이 없는 공통 기반은 `src/shared`에서 관리합니다.
+
+## Current Structure
+
+```text
+src/
+  main.tsx
+
+  app/
+    App.tsx
+    layouts/
+      AppLayout.tsx
+    providers/
+      AppProviders.tsx
+    router/
+      AppRouter.tsx
+      routes.ts
+
+  features/
+    auth/
+      AdminRoute.tsx
+      AuthSessionProvider.tsx
+      KakaoCallback.tsx
+      KakaoLoginButton.tsx
+      adminAccess.api.ts
+      auth.api.ts
+      auth.types.ts
+      authSessionContext.ts
+      kakaoOAuth.ts
+
+  pages/
+    access-denied/
+      AccessDeniedPage.tsx
+
+    kakao-callback/
+      KakaoCallbackPage.tsx
+
+    landing/
+      assets/
+        earth.svg
+      LandingPage.tsx
+
+    login/
+      api/
+      assets/
+        document.svg
+      components/
+      hooks/
+      LoginPage.tsx
+      types/
+
+    document-reviews/
+      api/
+        documentReviews.api.ts
+        documentReviews.query.ts
+      components/
+        DocumentReviewDetailContent.tsx
+        DocumentReviewDetailSkeleton.tsx
+        DocumentReviewFilters.tsx
+        DocumentReviewItem.tsx
+        DocumentReviewList.tsx
+        DocumentReviewListSkeleton.tsx
+        DocumentReviewStatusBadge.tsx
+      hooks/
+        useDocumentReviewActions.ts
+        useDocumentReviewInfiniteScroll.ts
+        useDocumentReviewDetail.ts
+        useDocumentReviews.ts
+      types/
+        documentReview.types.ts
+      utils/
+        formatDocumentReviewDate.ts
+      DocumentReviewDetailPage.tsx
+      DocumentReviewsPage.tsx
+
+  shared/
+    api/
+      generated/
+        schema.ts
+      apiClient.ts
+      authToken.ts
+      endpoints.ts
+      searchParams.ts
+    assets/
+      fonts/
+      icons/
+    constants/
+    hooks/
+    styles/
+      animations.css
+      fonts.css
+      global.css
+      index.css
+      tokens/
+        colors.css
+        typography.css
+    types/
+    ui/
+      icons/
+      buttonVariants.ts
+      Button.tsx
+      Header.tsx
+      TextArea.tsx
+      TextField.tsx
+    utils/
+      cn.ts
+```
+
+현재 빈 디렉터리는 초기 구조를 Git에 유지하기 위해 `.gitkeep`을 포함합니다. 실제 파일을 추가할 때 같은 디렉터리의 `.gitkeep`은 제거합니다.
+
+`shared/assets/icons`에는 공통 아이콘의 원본 SVG를 두고, `pnpm icons:generate`로 `shared/ui/icons`의 React 컴포넌트와 export를 생성합니다. 생성된 파일은 직접 수정하지 않습니다.
+
+## Directory Responsibilities
+
+### `src/main.tsx`
+
+- React root를 생성하고 최상위 `App`을 마운트합니다.
+- 앱 초기화에 필요한 전역 스타일 import 외에는 UI와 비즈니스 로직을 두지 않습니다.
+- `src/app`을 주 진입 의존성으로 유지합니다.
+
+### `src/app`
+
+- `App.tsx`: 최상위 앱 컴포넌트
+- `layouts`: 여러 route가 공유하는 관리자 화면 골격. 현재 `AppLayout`은 Tailwind utility로 Client와 동일한 375px~430px 모바일 화면 폭을 소유합니다.
+- `providers`: 전역 Context와 라이브러리 Provider 조합
+- `router`: route 정의, 보호 route와 navigation 설정
+
+`AppProviders`는 인증 세션과 TanStack Query의 전역 Provider를 조합합니다. Query client는 앱 생명주기 동안 한 번만 생성하며, endpoint별 query key와 재시도 정책은 데이터를 소유한 page 또는 feature에서 정의합니다.
+
+`app`은 페이지를 조합하고 전역 경계를 연결하지만 페이지 전용 API, form 상태 또는 업무 로직을 소유하지 않습니다.
+
+### `src/features`
+
+하나의 제품 기능이 여러 page와 app 경계에서 실제로 재사용될 때 사용합니다. 현재 `auth`는 로그인 화면, OAuth callback 화면과 앱 전역 session 복원에서 함께 사용되므로 `features/auth`가 소유합니다.
+
+- `features`는 route를 직접 정의하거나 특정 page를 import하지 않습니다.
+- transport와 token 갱신 같은 제품 지식 없는 기반은 `shared/api`를 사용합니다.
+- 한 page에만 속하는 기능은 미래 재사용을 예상해 `features`로 올리지 않습니다.
+
+### `src/pages`
+
+`pages/{page}`는 URL에 대응하는 페이지 컴포넌트와 그 페이지에서만 사용하는 코드를 함께 소유합니다.
+
+```text
+pages/{page}/
+  api/          페이지 전용 API 요청
+  components/   페이지 전용 UI
+  hooks/        페이지 전용 상태와 동작
+  types/        페이지 전용 타입
+```
+
+모든 하위 폴더를 매번 채울 필요는 없습니다. 작은 화면은 페이지 컴포넌트 하나로 시작하고 책임이 분리될 때만 가까운 하위 폴더를 사용합니다.
+
+관리자 화면은 다음 책임 단위를 기준으로 시작합니다.
+
+| Page area        | URL                                   | Responsibility                  |
+| ---------------- | ------------------------------------- | ------------------------------- |
+| 랜딩             | `/`                                   | 관리자 서비스 진입              |
+| 로그인           | `/login`                              | 관리자 인증 진입                |
+| 카카오 콜백      | `/auth/kakao/callback`                | 카카오 인가 완료와 세션 생성    |
+| 관리자 권한 확인 | `/auth/admin-access`                  | 관리자 API 접근 권한 확인       |
+| 접근 제한        | `/access-denied`                      | 관리자 권한 없음 안내           |
+| 서류 인증 목록   | `/document-reviews`                   | 상태 필터와 인증 요청 목록      |
+| 서류 인증 상세   | `/document-reviews/:documentReviewId` | 제출 서류 확인과 승인·반려 처리 |
+
+현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`, `/document-reviews`, `/document-reviews/:documentReviewId`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고 `/document-reviews`로 이동합니다. 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 서류 인증 상태 필터는 별도 페이지를 만들지 않고 `status` query parameter와 동기화하며, 목록은 다음 페이지가 있을 때 무한 스크롤로 이어서 조회합니다. 목록 항목은 상세 route로 연결하고 상세 화면은 route의 인증 신청 ID로 요청 정보와 유효 시간이 있는 서류 열람 URL을 조회합니다. 대기 중인 요청은 상세 화면에서 승인하거나 반려 사유와 함께 반려하며, 성공 후 상세와 현재 사용자의 목록 cache를 다시 조회합니다. 상세 화면의 직접 URL 접근 시 뒤로가기는 목록 route를 fallback으로 사용합니다.
+
+### `src/shared`
+
+- `api`: HTTP client, 인증 header, 공통 오류 변환처럼 여러 페이지가 사용하는 통신 기반
+- `assets`: 여러 페이지에서 공통으로 사용하는 폰트와 이미지 같은 번들 자산
+- `constants`: 여러 페이지에서 의미와 변경 이유가 같은 상수
+- `hooks`: 제품 페이지 지식 없이 재사용되는 훅
+- `styles`: 전역 스타일 진입점과 디자인 토큰
+- `types`: API envelope, pagination처럼 페이지와 무관한 공통 타입
+- `ui`: 버튼, 입력, 모달처럼 페이지 지식이 없는 재사용 UI
+- `utils`: 제품 문맥 없이 입력과 출력으로 설명할 수 있는 순수 유틸리티. `cn`은 조건부 Tailwind class 조합과 충돌 해소를 담당합니다.
+
+`shared`를 공용 보관함으로 사용하지 않습니다. 로그인 또는 서류 심사처럼 특정 업무 의미가 들어간 코드는 형태가 재사용 가능해 보여도 소유 페이지에 유지합니다.
+
+## Routing
+
+- route 정의는 `src/app/router`에서 관리합니다.
+- route 화면은 `src/pages`에서 import합니다.
+- route path 문자열을 여러 파일에 반복하지 않고 라우터를 도입할 때 한 위치에서 관리합니다.
+- React Router의 declarative mode를 사용하고 `AppRouter`에서 `BrowserRouter`, 공통 layout과 route 화면을 조합합니다.
+- 인증이 필요한 화면은 각 페이지에서 guard를 반복하기보다 router 또는 layout 경계에서 한 번 처리합니다.
+- 뒤로 가기, 직접 URL 접근과 새로고침 시 동작을 함께 확인합니다.
+- 배포 환경의 직접 URL 접근은 루트 `vercel.json`의 SPA rewrite로 `index.html`에 연결합니다.
+
+## Page State
+
+조회와 mutation이 있는 페이지에서는 요구사항에 맞게 다음 상태를 구분합니다.
+
+- initial 또는 idle
+- loading
+- empty
+- error
+- disabled 또는 submitting
+- success
+
+빈 데이터는 오류로 처리하지 않습니다. 사용자에게 보여줄 오류 상태와 개발자가 진단할 오류 정보를 구분합니다.
+
+서버 상태는 TanStack Query로 관리합니다. 페이지 전용 query key, query option과 transport-to-view model 변환은 해당 `pages/{page}`가 소유하고, `app/providers`에는 Query client와 Provider 조합만 둡니다. 서류 인증 목록은 사용자 ID와 상태 필터를 query key에 포함하고, 상세는 사용자 ID와 인증 신청 ID를 포함해 계정과 요청 간 캐시를 분리합니다. 상세 조회에서 발급하는 서류 열람 URL은 유효 시간 안에 갱신합니다.
+
+## Commonization Rules
+
+- 한 페이지 영역에서만 사용하는 코드는 해당 `pages/{page}` 안에 둡니다.
+- 형태가 비슷하거나 미래에 재사용될 수 있다는 이유만으로 `shared`로 이동하지 않습니다.
+- 여러 페이지에서 실제로 재사용되고 사용 의미와 변경 이유가 같을 때만 `shared` 이동을 검토합니다.
+- 여러 page 또는 app 경계에서 재사용되는 제품 기능은 `features`가 소유합니다.
+- 특정 업무 용어, API 타입 또는 권한 규칙이 포함된 코드는 공통 UI와 분리해 소유 페이지에 유지합니다.
+- 외부 라이브러리 wrapper는 앱 전체에서 사용하는 기반 설정일 때만 `shared` 배치를 검토합니다.
+- 현재 계층으로 표현하기 어려운 책임이 반복될 때만 새 계층을 제안하고, 도입 전 의존 방향과 이동 범위를 문서화합니다.
+
+## Dependency Direction
+
+허용 방향:
+
+```text
+main -> app -> pages -> features -> shared
+app -> features
+app -> shared
+pages -> features
+pages -> shared
+main -> shared/styles
+```
+
+금지 방향:
+
+```text
+pages -> app
+shared -> pages
+shared -> app
+features -> app
+features -> pages
+page-a -> page-b
+```
+
+페이지 간 코드 공유가 필요하면 해당 코드의 제품 의미를 먼저 확인합니다. 제품 문맥이 없는 공통 기반이면 `shared`, 제품 기능 자체가 여러 화면 경계에서 공유되면 `features`로 이동할지 `architecture-review`로 검토합니다.
