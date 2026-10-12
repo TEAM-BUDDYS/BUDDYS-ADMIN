@@ -22,17 +22,23 @@ src/
     auth/
       AdminRoute.tsx
       AuthSessionProvider.tsx
+      GoogleCallback.tsx
+      GoogleLoginButton.tsx
       KakaoCallback.tsx
       KakaoLoginButton.tsx
       adminAccess.api.ts
       auth.api.ts
       auth.types.ts
       authSessionContext.ts
+      googleOAuth.ts
       kakaoOAuth.ts
 
   pages/
     access-denied/
       AccessDeniedPage.tsx
+
+    google-callback/
+      GoogleCallbackPage.tsx
 
     kakao-callback/
       KakaoCallbackPage.tsx
@@ -159,13 +165,14 @@ pages/{page}/
 | ---------------- | ------------------------------------- | ------------------------------- |
 | 랜딩             | `/`                                   | 관리자 서비스 진입              |
 | 로그인           | `/login`                              | 관리자 인증 진입                |
+| 구글 콜백        | `/auth/google/callback`               | 구글 인가 완료와 세션 생성      |
 | 카카오 콜백      | `/auth/kakao/callback`                | 카카오 인가 완료와 세션 생성    |
 | 관리자 권한 확인 | `/auth/admin-access`                  | 관리자 API 접근 권한 확인       |
 | 접근 제한        | `/access-denied`                      | 관리자 권한 없음 안내           |
 | 서류 인증 목록   | `/document-reviews`                   | 상태 필터와 인증 요청 목록      |
 | 서류 인증 상세   | `/document-reviews/:documentReviewId` | 제출 서류 확인과 승인·반려 처리 |
 
-현재 구현된 route는 `/`, `/login`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`, `/document-reviews`, `/document-reviews/:documentReviewId`입니다. 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고 `/document-reviews`로 이동합니다. 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 서류 인증 상태 필터는 별도 페이지를 만들지 않고 `status` query parameter와 동기화하며, 목록은 다음 페이지가 있을 때 무한 스크롤로 이어서 조회합니다. 목록 항목은 상세 route로 연결하고 상세 화면은 route의 인증 신청 ID로 요청 정보와 유효 시간이 있는 서류 열람 URL을 조회합니다. 대기 중인 요청은 상세 화면에서 승인하거나 반려 사유와 함께 반려하며, 성공 후 상세와 현재 사용자의 목록 cache를 다시 조회합니다. 상세 화면의 직접 URL 접근 시 뒤로가기는 목록 route를 fallback으로 사용합니다.
+현재 구현된 route는 `/`, `/login`, `/auth/google/callback`, `/auth/kakao/callback`, `/auth/admin-access`, `/access-denied`, `/document-reviews`, `/document-reviews/:documentReviewId`입니다. 구글 또는 카카오 로그인 완료 후 `/auth/admin-access`에서 관리자 API 접근 권한을 확인하고 `/document-reviews`로 이동합니다. 관리자 route는 같은 `AdminRoute` 경계 아래에 둡니다. 서류 인증 상태 필터는 별도 페이지를 만들지 않고 `status` query parameter와 동기화하며, 목록은 다음 페이지가 있을 때 무한 스크롤로 이어서 조회합니다. 목록 항목은 상세 route로 연결하고 상세 화면은 route의 인증 신청 ID로 요청 정보와 유효 시간이 있는 서류 열람 URL을 조회합니다. 대기 중인 요청은 상세 화면에서 승인하거나 반려 사유와 함께 반려하며, 성공 후 상세와 현재 사용자의 목록 cache를 다시 조회합니다. 상세 화면의 직접 URL 접근 시 뒤로가기는 목록 route를 fallback으로 사용합니다.
 
 ### `src/shared`
 

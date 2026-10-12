@@ -16,6 +16,8 @@ CI에서는 `HUSKY=0`을 사용해 로컬 개발용 Git Hook 설치를 생략합
 `pnpm build`에 필요한 다음 공개 설정은 Repository의 `Settings > Secrets and variables > Actions > Variables`에 등록합니다. 값이 비어 있으면 Vite 설정 검증에서 빌드가 실패합니다.
 
 - `VITE_API_BASE_URL`
+- `VITE_GOOGLE_CLIENT_ID`
+- `VITE_GOOGLE_REDIRECT_URI`
 - `VITE_KAKAO_REST_API_KEY`
 - `VITE_KAKAO_REDIRECT_URI`
 
