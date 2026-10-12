@@ -1,3 +1,4 @@
+import { GoogleLoginButton } from '../../features/auth/GoogleLoginButton';
 import { KakaoLoginButton } from '../../features/auth/KakaoLoginButton';
 import documentImage from './assets/document.svg';
 
@@ -15,14 +16,15 @@ export const LoginPage = () => {
         <div className="flex flex-col items-center gap-2 text-center">
           <h1 className="text-title-b-22 text-gray-800">간편하게 시작하기</h1>
           <p className="text-body-m-15 text-gray-500">
-            카카오 계정으로 로그인하고
+            소셜 계정으로 로그인하고
             <br />
             인증 요청을 관리하세요
           </p>
         </div>
       </section>
 
-      <div className="flex h-[150px] w-full items-end pb-8.5">
+      <div className="flex w-full flex-col gap-3 pb-8.5">
+        <GoogleLoginButton />
         <KakaoLoginButton />
       </div>
     </main>

@@ -11,8 +11,17 @@ import {
   setAccessToken,
   setAccessTokenRefreshHandler,
 } from '../../shared/api/authToken';
-import { loginWithKakao, reissueAccessToken } from './auth.api';
-import type { AuthSession, AuthStatus, KakaoLoginParams } from './auth.types';
+import {
+  loginWithGoogle,
+  loginWithKakao,
+  reissueAccessToken,
+} from './auth.api';
+import type {
+  AuthSession,
+  AuthStatus,
+  GoogleLoginParams,
+  KakaoLoginParams,
+} from './auth.types';
 import { AuthSessionContext } from './authSessionContext';
 
 interface AuthSessionProviderProps {
@@ -66,6 +75,20 @@ export const AuthSessionProvider = ({
     [clearSession, setAuthenticatedSession],
   );
 
+  const authenticateWithGoogle = useCallback(
+    async (params: GoogleLoginParams) => {
+      try {
+        const session = await loginWithGoogle(params);
+        setAuthenticatedSession(session);
+        return session;
+      } catch (error) {
+        clearSession();
+        throw error;
+      }
+    },
+    [clearSession, setAuthenticatedSession],
+  );
+
   useEffect(() => {
     setAccessTokenRefreshHandler(refreshSession);
 
@@ -95,10 +118,17 @@ export const AuthSessionProvider = ({
     () => ({
       status,
       userId,
+      authenticateWithGoogle,
       authenticateWithKakao,
       invalidateSession: clearSession,
     }),
-    [authenticateWithKakao, clearSession, status, userId],
+    [
+      authenticateWithGoogle,
+      authenticateWithKakao,
+      clearSession,
+      status,
+      userId,
+    ],
   );
 
   return (
