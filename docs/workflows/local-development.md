@@ -66,17 +66,19 @@ pnpm preview
 - `VITE_` prefix가 붙은 변수는 클라이언트 번들에서 접근할 수 있으므로 공개 가능한 값만 사용합니다.
 - 관리자 비밀키, 서버 전용 token과 credential을 이 SPA에 넣지 않습니다.
 
-카카오 로그인에는 다음 공개 설정이 필요합니다.
+소셜 로그인에는 다음 공개 설정이 필요합니다.
 
-| Variable                  | Purpose                                       |
-| ------------------------- | --------------------------------------------- |
-| `VITE_API_BASE_URL`       | BUDDYS API base URL                           |
-| `VITE_KAKAO_REST_API_KEY` | 브라우저 OAuth 인가 요청용 Kakao REST API key |
-| `VITE_KAKAO_REDIRECT_URI` | Kakao Developers에 등록한 callback URL        |
+| Variable                   | Purpose                                       |
+| -------------------------- | --------------------------------------------- |
+| `VITE_API_BASE_URL`        | BUDDYS API base URL                           |
+| `VITE_GOOGLE_CLIENT_ID`    | 브라우저 OAuth 인가 요청용 Google Client ID   |
+| `VITE_GOOGLE_REDIRECT_URI` | Google Cloud에 등록한 callback URL            |
+| `VITE_KAKAO_REST_API_KEY`  | 브라우저 OAuth 인가 요청용 Kakao REST API key |
+| `VITE_KAKAO_REDIRECT_URI`  | Kakao Developers에 등록한 callback URL        |
 
-`.env.example`을 복사해 `.env.local`을 만들고 환경별 값을 입력합니다. `VITE_KAKAO_REDIRECT_URI`는 앱의 `/auth/kakao/callback` route와 일치해야 합니다.
+`.env.example`을 복사해 `.env.local`을 만들고 환경별 값을 입력합니다. `VITE_GOOGLE_REDIRECT_URI`와 `VITE_KAKAO_REDIRECT_URI`는 각각 앱의 `/auth/google/callback`, `/auth/kakao/callback` route와 일치해야 합니다.
 
-개발 서버와 프로덕션 빌드는 위 세 변수가 비어 있으면 시작하지 않습니다. GitHub Actions에서는 저장소의 `Settings > Secrets and variables > Actions > Variables`에 같은 이름의 Repository variable을 등록합니다. 공개 설정이므로 Secret이 아니라 Variable을 사용합니다.
+개발 서버와 프로덕션 빌드는 위 변수가 비어 있으면 시작하지 않습니다. GitHub Actions에서는 저장소의 `Settings > Secrets and variables > Actions > Variables`에 같은 이름의 Repository variable을 등록합니다. 공개 설정이므로 Secret이 아니라 Variable을 사용합니다.
 
 ## API Types
 

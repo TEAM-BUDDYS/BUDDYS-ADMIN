@@ -26,7 +26,10 @@ export const AppProviders = ({ children }: AppProvidersProps) => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthSessionProvider
-        shouldRestoreSession={pathname !== ROUTES.KAKAO_CALLBACK}
+        shouldRestoreSession={
+          pathname !== ROUTES.GOOGLE_CALLBACK &&
+          pathname !== ROUTES.KAKAO_CALLBACK
+        }
       >
         {children}
       </AuthSessionProvider>

@@ -6,6 +6,7 @@ import { createSearchParams } from '../../shared/api/searchParams';
 import type {
   AuthErrorResponse,
   AuthSession,
+  GoogleLoginParams,
   KakaoLoginParams,
   LoginResponse,
 } from './auth.types';
@@ -70,6 +71,16 @@ export const loginWithKakao = async (params: KakaoLoginParams) =>
   requestAuthSession(
     apiClient
       .post(ENDPOINTS.AUTH.KAKAO, {
+        searchParams: createSearchParams(params),
+        context: AUTH_REQUEST_CONTEXT,
+      })
+      .json<LoginResponse>(),
+  );
+
+export const loginWithGoogle = async (params: GoogleLoginParams) =>
+  requestAuthSession(
+    apiClient
+      .post(ENDPOINTS.AUTH.GOOGLE, {
         searchParams: createSearchParams(params),
         context: AUTH_REQUEST_CONTEXT,
       })
