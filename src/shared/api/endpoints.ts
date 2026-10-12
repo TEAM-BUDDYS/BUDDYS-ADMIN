@@ -13,6 +13,7 @@ export const ENDPOINTS = {
     VERIFICATIONS: ADMIN_VERIFICATIONS_ENDPOINT,
   },
   AUTH: {
+    GOOGLE: 'api/v1/auth/google',
     KAKAO: 'api/v1/auth/kakao',
     REISSUE: 'api/v1/auth/reissue',
   },
