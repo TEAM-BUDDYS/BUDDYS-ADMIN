@@ -4,6 +4,8 @@ import { defineConfig, loadEnv } from 'vite';
 
 const REQUIRED_ENVIRONMENT_VARIABLES = [
   'VITE_API_BASE_URL',
+  'VITE_GOOGLE_CLIENT_ID',
+  'VITE_GOOGLE_REDIRECT_URI',
   'VITE_KAKAO_REST_API_KEY',
   'VITE_KAKAO_REDIRECT_URI',
 ] as const;
