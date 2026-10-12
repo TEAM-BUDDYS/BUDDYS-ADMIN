@@ -4,6 +4,7 @@ import { AdminRoute } from '../../features/auth/AdminRoute';
 import { AccessDeniedPage } from '../../pages/access-denied/AccessDeniedPage';
 import { DocumentReviewDetailPage } from '../../pages/document-reviews/DocumentReviewDetailPage';
 import { DocumentReviewsPage } from '../../pages/document-reviews/DocumentReviewsPage';
+import { GoogleCallbackPage } from '../../pages/google-callback/GoogleCallbackPage';
 import { KakaoCallbackPage } from '../../pages/kakao-callback/KakaoCallbackPage';
 import { LandingPage } from '../../pages/landing/LandingPage';
 import { LoginPage } from '../../pages/login/LoginPage';
@@ -19,6 +20,15 @@ export const AppRouter = () => {
           <Route element={<AppLayout />}>
             <Route index element={<LandingPage loginPath={ROUTES.LOGIN} />} />
             <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+            <Route
+              path={ROUTES.GOOGLE_CALLBACK}
+              element={
+                <GoogleCallbackPage
+                  loginPath={ROUTES.LOGIN}
+                  successPath={ROUTES.ADMIN_ACCESS}
+                />
+              }
+            />
             <Route
               path={ROUTES.KAKAO_CALLBACK}
               element={
