@@ -9,6 +9,7 @@ BUDDYS-ADMIN은 단일 Vite SPA로 시작합니다.
 .github/
 .husky/
 docs/
+public/
 scripts/
 src/
 .gitignore
@@ -35,6 +36,7 @@ vite.config.ts
 - `.github`: CI, Vercel CD와 PR 알림 같은 GitHub Actions 자동화 설정
 - `.husky`: Git hook에서 실행할 자동화 스크립트
 - `docs`: 프로젝트 구조, 컨벤션과 작업 절차 문서
+- `public`: favicon, Open Graph 이미지처럼 URL로 직접 제공하는 정적 자산
 - `scripts`: SVG 아이콘처럼 반복 생성하는 코드 자산의 자동화 스크립트
 - `src`: `app`, `pages`, `features`, `shared` 경계로 구성된 React 애플리케이션 코드
 - `.gitignore`: 생성물, 설치 결과와 로컬 전용 파일 제외 규칙
@@ -43,7 +45,7 @@ vite.config.ts
 - `AGENTS.md`: AI agent의 저장소 진입점
 - `README.md`: 사람을 위한 프로젝트 소개와 빠른 시작
 - `eslint.config.js`: TypeScript와 React 정적 검사 설정
-- `index.html`: Vite HTML 진입점
+- `index.html`: 문서 title, favicon과 공유용 metadata를 포함하는 Vite HTML 진입점
 - `lint-staged.config.mjs`: staged 파일에 적용할 lint와 format 명령
 - `package.json`: 스크립트와 직접 의존성의 원본
 - `pnpm-lock.yaml`: pnpm이 해석한 의존성 버전
